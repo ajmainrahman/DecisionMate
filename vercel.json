@@ -8,6 +8,11 @@
     "BASE_PATH": "/",
     "PORT": "3000"
   },
+  "functions": {
+    "api/[[...route]].ts": {
+      "includeFiles": "artifacts/api-server/src/**,lib/api-zod/src/**,lib/db/src/**,lib/integrations-gemini-ai/src/**"
+    }
+  },
   "rewrites": [
     { "source": "/api/(.*)", "destination": "/api/[[...route]]" },
     { "source": "/((?!api).*)", "destination": "/index.html" }

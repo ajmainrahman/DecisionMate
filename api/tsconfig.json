@@ -1,0 +1,19 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "moduleResolution": "bundler",
+    "module": "esnext",
+    "target": "es2022",
+    "types": ["node"],
+    "paths": {
+      "@workspace/api-zod": ["../lib/api-zod/src/index.ts"],
+      "@workspace/db": ["../lib/db/src/index.ts"],
+      "@workspace/db/schema": ["../lib/db/src/schema/index.ts"]
+    }
+  },
+  "include": ["./**/*.ts", "../artifacts/api-server/src/**/*.ts"],
+  "references": [
+    { "path": "../lib/db" },
+    { "path": "../lib/api-zod" }
+  ]
+}
