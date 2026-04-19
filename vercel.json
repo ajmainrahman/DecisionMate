@@ -1,11 +1,12 @@
 {
   "version": 2,
-  "buildCommand": "BASE_PATH=/ pnpm --filter @workspace/decisionmate run build",
-  "outputDirectory": "artifacts/decisionmate/dist",
+  "buildCommand": "BASE_PATH=/ PORT=3000 pnpm --filter @workspace/decisionmate run build",
+  "outputDirectory": "artifacts/decisionmate/dist/public",
   "installCommand": "npm install -g pnpm@latest && pnpm install --frozen-lockfile --ignore-scripts",
   "framework": null,
   "env": {
-    "BASE_PATH": "/"
+    "BASE_PATH": "/",
+    "PORT": "3000"
   },
   "rewrites": [
     { "source": "/api/(.*)", "destination": "/api/[[...route]]" },
