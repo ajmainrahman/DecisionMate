@@ -1,6 +1,5 @@
 openapi: 3.1.0
 info:
-  # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
   description: API specification
@@ -88,6 +87,30 @@ paths:
       responses:
         "204":
           description: Deleted
+  /decisions/{id}/outcome:
+    patch:
+      operationId: updateDecisionOutcome
+      tags: [decisions]
+      summary: Update outcome of a past decision
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateOutcomeRequest"
+      responses:
+        "200":
+          description: Updated decision
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Decision"
   /decisions/dashboard:
     get:
       operationId: getDecisionDashboard
@@ -107,8 +130,7 @@ components:
       properties:
         status:
           type: string
-      required:
-        - status
+      required: [status]
     CreateDecisionRequest:
       type: object
       properties:
@@ -132,10 +154,33 @@ components:
         deadline:
           type: string
           enum: [none, today, this_week, later]
+        energyLevel:
+          type: string
+          enum: [low, medium, high]
+        importance:
+          type: string
+          enum: [minor, moderate, major, life_changing]
+        budgetImpact:
+          type: string
+          enum: [none, small, medium, large]
+        socialInfluence:
+          type: string
+          enum: [just_me, close_family, team, public]
+        gutFeeling:
+          type: string
+          enum: [go_for_it, unsure, avoid_it]
         useAi:
           type: boolean
-      required:
-        - problem
+      required: [problem]
+    UpdateOutcomeRequest:
+      type: object
+      properties:
+        outcome:
+          type: string
+          enum: [great, okay, regret]
+        outcomeNote:
+          type: string
+      required: [outcome]
     Decision:
       type: object
       properties:
@@ -159,6 +204,27 @@ components:
           type: string
           nullable: true
         deadline:
+          type: string
+          nullable: true
+        energyLevel:
+          type: string
+          nullable: true
+        importance:
+          type: string
+          nullable: true
+        budgetImpact:
+          type: string
+          nullable: true
+        socialInfluence:
+          type: string
+          nullable: true
+        gutFeeling:
+          type: string
+          nullable: true
+        outcome:
+          type: string
+          nullable: true
+        outcomeNote:
           type: string
           nullable: true
         ruleDecision:
@@ -210,9 +276,7 @@ components:
                 type: string
               count:
                 type: integer
-            required:
-              - label
-              - count
+            required: [label, count]
       required:
         - todayCount
         - totalCount

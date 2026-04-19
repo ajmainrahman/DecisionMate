@@ -5,8 +5,13 @@
  * API specification
  * OpenAPI spec version: 0.1.0
  */
+import type { CreateDecisionRequestBudgetImpact } from "./createDecisionRequestBudgetImpact";
 import type { CreateDecisionRequestDeadline } from "./createDecisionRequestDeadline";
+import type { CreateDecisionRequestEnergyLevel } from "./createDecisionRequestEnergyLevel";
+import type { CreateDecisionRequestGutFeeling } from "./createDecisionRequestGutFeeling";
+import type { CreateDecisionRequestImportance } from "./createDecisionRequestImportance";
 import type { CreateDecisionRequestPriority } from "./createDecisionRequestPriority";
+import type { CreateDecisionRequestSocialInfluence } from "./createDecisionRequestSocialInfluence";
 import type { CreateDecisionRequestStressLevel } from "./createDecisionRequestStressLevel";
 
 export interface CreateDecisionRequest {
@@ -22,5 +27,10 @@ export interface CreateDecisionRequest {
   sleepHours?: number;
   stressLevel?: CreateDecisionRequestStressLevel;
   deadline?: CreateDecisionRequestDeadline;
+  energyLevel?: CreateDecisionRequestEnergyLevel;
+  importance?: CreateDecisionRequestImportance;
+  budgetImpact?: CreateDecisionRequestBudgetImpact;
+  socialInfluence?: CreateDecisionRequestSocialInfluence;
+  gutFeeling?: CreateDecisionRequestGutFeeling;
   useAi?: boolean;
 }

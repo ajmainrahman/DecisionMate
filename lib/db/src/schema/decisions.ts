@@ -20,6 +20,15 @@ export const decisionsTable = pgTable("decisions", {
   sleepHours: real("sleep_hours"),
   stressLevel: varchar("stress_level", { length: 20 }),
   deadline: varchar("deadline", { length: 20 }),
+  // ── New fields ──
+  energyLevel: varchar("energy_level", { length: 20 }),
+  importance: varchar("importance", { length: 20 }),
+  budgetImpact: varchar("budget_impact", { length: 20 }),
+  socialInfluence: varchar("social_influence", { length: 20 }),
+  gutFeeling: varchar("gut_feeling", { length: 20 }),
+  outcome: varchar("outcome", { length: 20 }),
+  outcomeNote: text("outcome_note"),
+  // ── Output fields ──
   ruleDecision: text("rule_decision").notNull(),
   ruleExplanation: text("rule_explanation").notNull(),
   finalDecision: text("final_decision").notNull(),

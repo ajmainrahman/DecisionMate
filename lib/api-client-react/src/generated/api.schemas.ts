@@ -37,6 +37,54 @@ export const CreateDecisionRequestDeadline = {
   later: "later",
 } as const;
 
+export type CreateDecisionRequestEnergyLevel =
+  (typeof CreateDecisionRequestEnergyLevel)[keyof typeof CreateDecisionRequestEnergyLevel];
+
+export const CreateDecisionRequestEnergyLevel = {
+  low: "low",
+  medium: "medium",
+  high: "high",
+} as const;
+
+export type CreateDecisionRequestImportance =
+  (typeof CreateDecisionRequestImportance)[keyof typeof CreateDecisionRequestImportance];
+
+export const CreateDecisionRequestImportance = {
+  minor: "minor",
+  moderate: "moderate",
+  major: "major",
+  life_changing: "life_changing",
+} as const;
+
+export type CreateDecisionRequestBudgetImpact =
+  (typeof CreateDecisionRequestBudgetImpact)[keyof typeof CreateDecisionRequestBudgetImpact];
+
+export const CreateDecisionRequestBudgetImpact = {
+  none: "none",
+  small: "small",
+  medium: "medium",
+  large: "large",
+} as const;
+
+export type CreateDecisionRequestSocialInfluence =
+  (typeof CreateDecisionRequestSocialInfluence)[keyof typeof CreateDecisionRequestSocialInfluence];
+
+export const CreateDecisionRequestSocialInfluence = {
+  just_me: "just_me",
+  close_family: "close_family",
+  team: "team",
+  public: "public",
+} as const;
+
+export type CreateDecisionRequestGutFeeling =
+  (typeof CreateDecisionRequestGutFeeling)[keyof typeof CreateDecisionRequestGutFeeling];
+
+export const CreateDecisionRequestGutFeeling = {
+  go_for_it: "go_for_it",
+  unsure: "unsure",
+  avoid_it: "avoid_it",
+} as const;
+
 export interface CreateDecisionRequest {
   /** @minLength 3 */
   problem: string;
@@ -50,7 +98,26 @@ export interface CreateDecisionRequest {
   sleepHours?: number;
   stressLevel?: CreateDecisionRequestStressLevel;
   deadline?: CreateDecisionRequestDeadline;
+  energyLevel?: CreateDecisionRequestEnergyLevel;
+  importance?: CreateDecisionRequestImportance;
+  budgetImpact?: CreateDecisionRequestBudgetImpact;
+  socialInfluence?: CreateDecisionRequestSocialInfluence;
+  gutFeeling?: CreateDecisionRequestGutFeeling;
   useAi?: boolean;
+}
+
+export type UpdateOutcomeRequestOutcome =
+  (typeof UpdateOutcomeRequestOutcome)[keyof typeof UpdateOutcomeRequestOutcome];
+
+export const UpdateOutcomeRequestOutcome = {
+  great: "great",
+  okay: "okay",
+  regret: "regret",
+} as const;
+
+export interface UpdateOutcomeRequest {
+  outcome: UpdateOutcomeRequestOutcome;
+  outcomeNote?: string;
 }
 
 export interface Decision {
@@ -62,6 +129,13 @@ export interface Decision {
   sleepHours?: number | null;
   stressLevel?: string | null;
   deadline?: string | null;
+  energyLevel?: string | null;
+  importance?: string | null;
+  budgetImpact?: string | null;
+  socialInfluence?: string | null;
+  gutFeeling?: string | null;
+  outcome?: string | null;
+  outcomeNote?: string | null;
   ruleDecision: string;
   ruleExplanation: string;
   finalDecision: string;

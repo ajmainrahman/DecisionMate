@@ -126,3 +126,24 @@ router.get("/decisions/dashboard", async (_req, res, next) => {
 });
 
 export default router;
+import { z } from "zod";
+
+const UpdateOutcomeBody = z.object({
+  outcome: z.enum(["great", "okay", "regret"]),
+  outcomeNote: z.string().optional(),
+});
+
+router.patch("/decisions/:id/outcome", async (req, res, next) => {
+  try {
+    const id = Number(req.params.id);
+    const body = UpdateOutcomeBody.parse(req.body);
+    const [updated] = await db
+      .update(decisionsTable)
+      .set({ outcome: body.outcome, outcomeNote: body.outcomeNote ?? null })
+      .where(eq(decisionsTable.id, id))
+      .returning();
+    res.json(ListDecisionsResponseItem.parse(updated));
+  } catch (err) {
+    next(err);
+  }
+});

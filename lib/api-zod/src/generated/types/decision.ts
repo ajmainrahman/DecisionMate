@@ -15,6 +15,13 @@ export interface Decision {
   sleepHours?: number | null;
   stressLevel?: string | null;
   deadline?: string | null;
+  energyLevel?: string | null;
+  importance?: string | null;
+  budgetImpact?: string | null;
+  socialInfluence?: string | null;
+  gutFeeling?: string | null;
+  outcome?: string | null;
+  outcomeNote?: string | null;
   ruleDecision: string;
   ruleExplanation: string;
   finalDecision: string;

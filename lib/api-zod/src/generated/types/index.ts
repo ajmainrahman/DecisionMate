@@ -7,8 +7,13 @@
  */
 
 export * from "./createDecisionRequest";
+export * from "./createDecisionRequestBudgetImpact";
 export * from "./createDecisionRequestDeadline";
+export * from "./createDecisionRequestEnergyLevel";
+export * from "./createDecisionRequestGutFeeling";
+export * from "./createDecisionRequestImportance";
 export * from "./createDecisionRequestPriority";
+export * from "./createDecisionRequestSocialInfluence";
 export * from "./createDecisionRequestStressLevel";
 export * from "./decision";
 export * from "./decisionDashboard";
@@ -16,3 +21,5 @@ export * from "./decisionDashboardMoodBreakdownItem";
 export * from "./healthStatus";
 export * from "./listDecisionsParams";
 export * from "./listDecisionsPriority";
+export * from "./updateOutcomeRequest";
+export * from "./updateOutcomeRequestOutcome";

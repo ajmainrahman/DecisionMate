@@ -22,6 +22,7 @@ import type {
   DecisionDashboard,
   HealthStatus,
   ListDecisionsParams,
+  UpdateOutcomeRequest,
 } from "./api.schemas";
 
 import { customFetch } from "../custom-fetch";
@@ -371,6 +372,93 @@ export const useDeleteDecision = <
   TContext
 > => {
   return useMutation(getDeleteDecisionMutationOptions(options));
+};
+
+/**
+ * @summary Update outcome of a past decision
+ */
+export const getUpdateDecisionOutcomeUrl = (id: number) => {
+  return `/api/decisions/${id}/outcome`;
+};
+
+export const updateDecisionOutcome = async (
+  id: number,
+  updateOutcomeRequest: UpdateOutcomeRequest,
+  options?: RequestInit,
+): Promise<Decision> => {
+  return customFetch<Decision>(getUpdateDecisionOutcomeUrl(id), {
+    ...options,
+    method: "PATCH",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(updateOutcomeRequest),
+  });
+};
+
+export const getUpdateDecisionOutcomeMutationOptions = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof updateDecisionOutcome>>,
+    TError,
+    { id: number; data: BodyType<UpdateOutcomeRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof updateDecisionOutcome>>,
+  TError,
+  { id: number; data: BodyType<UpdateOutcomeRequest> },
+  TContext
+> => {
+  const mutationKey = ["updateDecisionOutcome"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof updateDecisionOutcome>>,
+    { id: number; data: BodyType<UpdateOutcomeRequest> }
+  > = (props) => {
+    const { id, data } = props ?? {};
+
+    return updateDecisionOutcome(id, data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type UpdateDecisionOutcomeMutationResult = NonNullable<
+  Awaited<ReturnType<typeof updateDecisionOutcome>>
+>;
+export type UpdateDecisionOutcomeMutationBody = BodyType<UpdateOutcomeRequest>;
+export type UpdateDecisionOutcomeMutationError = ErrorType<unknown>;
+
+/**
+ * @summary Update outcome of a past decision
+ */
+export const useUpdateDecisionOutcome = <
+  TError = ErrorType<unknown>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof updateDecisionOutcome>>,
+    TError,
+    { id: number; data: BodyType<UpdateOutcomeRequest> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof updateDecisionOutcome>>,
+  TError,
+  { id: number; data: BodyType<UpdateOutcomeRequest> },
+  TContext
+> => {
+  return useMutation(getUpdateDecisionOutcomeMutationOptions(options));
 };
 
 /**

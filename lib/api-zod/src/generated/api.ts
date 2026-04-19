@@ -33,6 +33,13 @@ export const ListDecisionsResponseItem = zod.object({
   sleepHours: zod.number().nullish(),
   stressLevel: zod.string().nullish(),
   deadline: zod.string().nullish(),
+  energyLevel: zod.string().nullish(),
+  importance: zod.string().nullish(),
+  budgetImpact: zod.string().nullish(),
+  socialInfluence: zod.string().nullish(),
+  gutFeeling: zod.string().nullish(),
+  outcome: zod.string().nullish(),
+  outcomeNote: zod.string().nullish(),
   ruleDecision: zod.string(),
   ruleExplanation: zod.string(),
   finalDecision: zod.string(),
@@ -63,6 +70,15 @@ export const CreateDecisionBody = zod.object({
     .optional(),
   stressLevel: zod.enum(["low", "medium", "high"]).optional(),
   deadline: zod.enum(["none", "today", "this_week", "later"]).optional(),
+  energyLevel: zod.enum(["low", "medium", "high"]).optional(),
+  importance: zod
+    .enum(["minor", "moderate", "major", "life_changing"])
+    .optional(),
+  budgetImpact: zod.enum(["none", "small", "medium", "large"]).optional(),
+  socialInfluence: zod
+    .enum(["just_me", "close_family", "team", "public"])
+    .optional(),
+  gutFeeling: zod.enum(["go_for_it", "unsure", "avoid_it"]).optional(),
   useAi: zod.boolean().optional(),
 });
 
@@ -71,6 +87,43 @@ export const CreateDecisionBody = zod.object({
  */
 export const DeleteDecisionParams = zod.object({
   id: zod.coerce.number(),
+});
+
+/**
+ * @summary Update outcome of a past decision
+ */
+export const UpdateDecisionOutcomeParams = zod.object({
+  id: zod.coerce.number(),
+});
+
+export const UpdateDecisionOutcomeBody = zod.object({
+  outcome: zod.enum(["great", "okay", "regret"]),
+  outcomeNote: zod.string().optional(),
+});
+
+export const UpdateDecisionOutcomeResponse = zod.object({
+  id: zod.number(),
+  problem: zod.string(),
+  mood: zod.string().nullish(),
+  timeAvailable: zod.string().nullish(),
+  priority: zod.string().nullish(),
+  sleepHours: zod.number().nullish(),
+  stressLevel: zod.string().nullish(),
+  deadline: zod.string().nullish(),
+  energyLevel: zod.string().nullish(),
+  importance: zod.string().nullish(),
+  budgetImpact: zod.string().nullish(),
+  socialInfluence: zod.string().nullish(),
+  gutFeeling: zod.string().nullish(),
+  outcome: zod.string().nullish(),
+  outcomeNote: zod.string().nullish(),
+  ruleDecision: zod.string(),
+  ruleExplanation: zod.string(),
+  finalDecision: zod.string(),
+  explanation: zod.string(),
+  confidence: zod.number(),
+  aiUsed: zod.boolean(),
+  createdAt: zod.coerce.date(),
 });
 
 /**
@@ -91,6 +144,13 @@ export const GetDecisionDashboardResponse = zod.object({
       sleepHours: zod.number().nullish(),
       stressLevel: zod.string().nullish(),
       deadline: zod.string().nullish(),
+      energyLevel: zod.string().nullish(),
+      importance: zod.string().nullish(),
+      budgetImpact: zod.string().nullish(),
+      socialInfluence: zod.string().nullish(),
+      gutFeeling: zod.string().nullish(),
+      outcome: zod.string().nullish(),
+      outcomeNote: zod.string().nullish(),
       ruleDecision: zod.string(),
       ruleExplanation: zod.string(),
       finalDecision: zod.string(),
