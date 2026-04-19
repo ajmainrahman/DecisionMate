@@ -4,10 +4,8 @@
   "outputDirectory": "artifacts/decisionmate/dist",
   "installCommand": "npm install -g pnpm@latest && pnpm install --frozen-lockfile --ignore-scripts",
   "framework": null,
-  "functions": {
-    "api/**/*.ts": {
-      "runtime": "@vercel/node@5"
-    }
+  "env": {
+    "BASE_PATH": "/"
   },
   "rewrites": [
     { "source": "/api/(.*)", "destination": "/api/[[...route]]" },
