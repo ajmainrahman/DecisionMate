@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "buildCommand": "BASE_PATH=/ PORT=3000 pnpm --filter @workspace/decisionmate run build",
+  "buildCommand": "BASE_PATH=/ PORT=3000 pnpm --filter @workspace/decisionmate run build && pnpm --filter @workspace/api-server run build",
   "outputDirectory": "artifacts/decisionmate/dist/public",
   "installCommand": "npm install -g pnpm@latest && pnpm install --frozen-lockfile --ignore-scripts",
   "framework": null,
@@ -9,8 +9,8 @@
     "PORT": "3000"
   },
   "functions": {
-    "api/[[...route]].js": {
-      "includeFiles": "artifacts/api-server/src/**,lib/api-zod/src/**,lib/db/src/**,lib/integrations-gemini-ai/**"
+    "api/[[...route]].mjs": {
+      "includeFiles": "artifacts/api-server/dist/**"
     }
   },
   "rewrites": [
