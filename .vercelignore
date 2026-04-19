@@ -1,0 +1,6 @@
+.replit
+.replitignore
+replit.md
+attached_assets/
+scripts/
+*.sh

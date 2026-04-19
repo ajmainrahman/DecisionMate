@@ -1,0 +1,16 @@
+{
+  "version": 2,
+  "buildCommand": "pnpm --filter @workspace/decisionmate run build",
+  "outputDirectory": "artifacts/decisionmate/dist",
+  "installCommand": "npm install -g pnpm@latest && pnpm install --frozen-lockfile --ignore-scripts",
+  "framework": null,
+  "functions": {
+    "api/**/*.ts": {
+      "runtime": "@vercel/node@5"
+    }
+  },
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "/api/[[...route]]" },
+    { "source": "/((?!api).*)", "destination": "/index.html" }
+  ]
+}
