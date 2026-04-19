@@ -8,3 +8,94 @@
 export interface HealthStatus {
   status: string;
 }
+
+export type CreateDecisionRequestPriority =
+  (typeof CreateDecisionRequestPriority)[keyof typeof CreateDecisionRequestPriority];
+
+export const CreateDecisionRequestPriority = {
+  low: "low",
+  medium: "medium",
+  high: "high",
+} as const;
+
+export type CreateDecisionRequestStressLevel =
+  (typeof CreateDecisionRequestStressLevel)[keyof typeof CreateDecisionRequestStressLevel];
+
+export const CreateDecisionRequestStressLevel = {
+  low: "low",
+  medium: "medium",
+  high: "high",
+} as const;
+
+export type CreateDecisionRequestDeadline =
+  (typeof CreateDecisionRequestDeadline)[keyof typeof CreateDecisionRequestDeadline];
+
+export const CreateDecisionRequestDeadline = {
+  none: "none",
+  today: "today",
+  this_week: "this_week",
+  later: "later",
+} as const;
+
+export interface CreateDecisionRequest {
+  /** @minLength 3 */
+  problem: string;
+  mood?: string;
+  timeAvailable?: string;
+  priority?: CreateDecisionRequestPriority;
+  /**
+   * @minimum 0
+   * @maximum 24
+   */
+  sleepHours?: number;
+  stressLevel?: CreateDecisionRequestStressLevel;
+  deadline?: CreateDecisionRequestDeadline;
+  useAi?: boolean;
+}
+
+export interface Decision {
+  id: number;
+  problem: string;
+  mood?: string | null;
+  timeAvailable?: string | null;
+  priority?: string | null;
+  sleepHours?: number | null;
+  stressLevel?: string | null;
+  deadline?: string | null;
+  ruleDecision: string;
+  ruleExplanation: string;
+  finalDecision: string;
+  explanation: string;
+  confidence: number;
+  aiUsed: boolean;
+  createdAt: string;
+}
+
+export type DecisionDashboardMoodBreakdownItem = {
+  label: string;
+  count: number;
+};
+
+export interface DecisionDashboard {
+  todayCount: number;
+  totalCount: number;
+  aiEnhancedCount: number;
+  averageConfidence: number;
+  recentDecisions: Decision[];
+  moodBreakdown: DecisionDashboardMoodBreakdownItem[];
+}
+
+export type ListDecisionsParams = {
+  search?: string;
+  mood?: string;
+  priority?: ListDecisionsPriority;
+};
+
+export type ListDecisionsPriority =
+  (typeof ListDecisionsPriority)[keyof typeof ListDecisionsPriority];
+
+export const ListDecisionsPriority = {
+  low: "low",
+  medium: "medium",
+  high: "high",
+} as const;

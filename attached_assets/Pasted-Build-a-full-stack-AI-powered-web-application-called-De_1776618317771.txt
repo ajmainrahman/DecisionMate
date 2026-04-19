@@ -1,0 +1,145 @@
+Build a full-stack AI-powered web application called **“DecisionMate”** — a smart daily decision-making assistant.
+
+## 🎯 Core Idea
+
+The app helps users make better decisions in daily life using a combination of:
+
+* Rule-based logic (fast, deterministic decisions)
+* AI-powered suggestions (contextual, personalized insights)
+
+---
+
+## 🧱 Tech Stack Requirements
+
+* Frontend: Next.js (React)
+* Backend: Next.js API Routes (serverless functions)
+* Deployment: Vercel
+* Database: Supabase (or Firebase as alternative)
+* AI Integration: Google Gemini API (free tier) or Groq API
+
+---
+
+## ⚙️ Core Features
+
+### 1. Decision Input System
+
+* Input box where users type their problem
+* Optional structured inputs:
+
+  * Mood (tired, energetic, stressed)
+  * Time available
+  * Priority level
+
+---
+
+### 2. Rule-Based Decision Engine (IMPORTANT)
+
+Before calling AI, implement basic logic:
+
+Examples:
+
+* If sleep < 5 hours → suggest rest
+* If deadline is near → suggest work
+* If stress high → suggest break
+
+This logic should return a preliminary decision instantly.
+
+---
+
+### 3. AI Enhancement Layer
+
+Send user input + rule-based result to AI API.
+
+Prompt example:
+“User is tired and has pending work. Suggest the best decision and explain briefly.”
+
+AI should:
+
+* Refine the decision
+* Provide reasoning
+* Keep response short and practical
+
+---
+
+### 4. Decision Output UI
+
+Display:
+
+* Final decision (highlighted)
+* Short explanation
+* Confidence level (optional)
+
+---
+
+### 5. History System
+
+* Save decisions in database
+* Show past decisions list
+* Allow filtering/search
+
+---
+
+### 6. Simple Dashboard
+
+* Today’s decisions
+* Usage stats (optional)
+* Quick “Ask Again” button
+
+---
+
+## 🧩 Architecture Flow
+
+User Input
+→ Rule-Based Logic (fast decision)
+→ AI API Call (Gemini/Groq)
+→ Final Output
+→ Store in Database
+
+---
+
+## 🔐 Environment Setup
+
+Use environment variables:
+
+* GEMINI_API_KEY or GROQ_API_KEY
+* DATABASE_URL (Supabase)
+
+---
+
+## 🎨 UI Requirements
+
+* Clean, minimal interface
+* Mobile-friendly
+* Focus on simplicity (no clutter)
+* One main input box + result card
+
+---
+
+## 🚀 Deployment Instructions
+
+* Push code to GitHub
+* Connect GitHub to Vercel
+* Add environment variables in Vercel dashboard
+* Deploy
+
+---
+
+## 💡 Important Guidelines
+
+* Do NOT rely fully on AI — always use rule-based logic first
+* Keep API usage minimal (cost efficiency)
+* Optimize for speed and simplicity
+* Write clean, modular code
+
+---
+
+## 🎯 Goal
+
+Build a working MVP where a user can:
+
+1. Enter a decision problem
+2. Get an instant smart suggestion
+3. See explanation
+4. Save and review past decisions
+
+The app should feel fast, helpful, and practical — like a daily thinking assistant.

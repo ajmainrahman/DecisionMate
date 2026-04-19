@@ -14,3 +14,96 @@ import * as zod from "zod";
 export const HealthCheckResponse = zod.object({
   status: zod.string(),
 });
+
+/**
+ * @summary List saved decisions
+ */
+export const ListDecisionsQueryParams = zod.object({
+  search: zod.coerce.string().optional(),
+  mood: zod.coerce.string().optional(),
+  priority: zod.enum(["low", "medium", "high"]).optional(),
+});
+
+export const ListDecisionsResponseItem = zod.object({
+  id: zod.number(),
+  problem: zod.string(),
+  mood: zod.string().nullish(),
+  timeAvailable: zod.string().nullish(),
+  priority: zod.string().nullish(),
+  sleepHours: zod.number().nullish(),
+  stressLevel: zod.string().nullish(),
+  deadline: zod.string().nullish(),
+  ruleDecision: zod.string(),
+  ruleExplanation: zod.string(),
+  finalDecision: zod.string(),
+  explanation: zod.string(),
+  confidence: zod.number(),
+  aiUsed: zod.boolean(),
+  createdAt: zod.coerce.date(),
+});
+export const ListDecisionsResponse = zod.array(ListDecisionsResponseItem);
+
+/**
+ * @summary Create a decision recommendation
+ */
+export const createDecisionBodyProblemMin = 3;
+
+export const createDecisionBodySleepHoursMin = 0;
+export const createDecisionBodySleepHoursMax = 24;
+
+export const CreateDecisionBody = zod.object({
+  problem: zod.string().min(createDecisionBodyProblemMin),
+  mood: zod.string().optional(),
+  timeAvailable: zod.string().optional(),
+  priority: zod.enum(["low", "medium", "high"]).optional(),
+  sleepHours: zod
+    .number()
+    .min(createDecisionBodySleepHoursMin)
+    .max(createDecisionBodySleepHoursMax)
+    .optional(),
+  stressLevel: zod.enum(["low", "medium", "high"]).optional(),
+  deadline: zod.enum(["none", "today", "this_week", "later"]).optional(),
+  useAi: zod.boolean().optional(),
+});
+
+/**
+ * @summary Delete a saved decision
+ */
+export const DeleteDecisionParams = zod.object({
+  id: zod.coerce.number(),
+});
+
+/**
+ * @summary Decision dashboard summary
+ */
+export const GetDecisionDashboardResponse = zod.object({
+  todayCount: zod.number(),
+  totalCount: zod.number(),
+  aiEnhancedCount: zod.number(),
+  averageConfidence: zod.number(),
+  recentDecisions: zod.array(
+    zod.object({
+      id: zod.number(),
+      problem: zod.string(),
+      mood: zod.string().nullish(),
+      timeAvailable: zod.string().nullish(),
+      priority: zod.string().nullish(),
+      sleepHours: zod.number().nullish(),
+      stressLevel: zod.string().nullish(),
+      deadline: zod.string().nullish(),
+      ruleDecision: zod.string(),
+      ruleExplanation: zod.string(),
+      finalDecision: zod.string(),
+      explanation: zod.string(),
+      confidence: zod.number(),
+      aiUsed: zod.boolean(),
+      createdAt: zod.coerce.date(),
+    }),
+  ),
+  moodBreakdown: zod.array(
+    zod.object({
+      label: zod.string(),
+      count: zod.number(),
+    }),
+  ),
+});

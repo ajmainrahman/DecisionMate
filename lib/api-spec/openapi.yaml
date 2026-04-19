@@ -10,6 +10,8 @@ servers:
 tags:
   - name: health
     description: Health operations
+  - name: decisions
+    description: DecisionMate operations
 paths:
   /healthz:
     get:
@@ -24,6 +26,80 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+  /decisions:
+    get:
+      operationId: listDecisions
+      tags: [decisions]
+      summary: List saved decisions
+      parameters:
+        - name: search
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: mood
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: priority
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [low, medium, high]
+      responses:
+        "200":
+          description: Saved decisions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Decision"
+    post:
+      operationId: createDecision
+      tags: [decisions]
+      summary: Create a decision recommendation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateDecisionRequest"
+      responses:
+        "201":
+          description: Created decision
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Decision"
+  /decisions/{id}:
+    delete:
+      operationId: deleteDecision
+      tags: [decisions]
+      summary: Delete a saved decision
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+  /decisions/dashboard:
+    get:
+      operationId: getDecisionDashboard
+      tags: [decisions]
+      summary: Decision dashboard summary
+      responses:
+        "200":
+          description: Dashboard summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DecisionDashboard"
 components:
   schemas:
     HealthStatus:
@@ -33,4 +109,114 @@ components:
           type: string
       required:
         - status
-
+    CreateDecisionRequest:
+      type: object
+      properties:
+        problem:
+          type: string
+          minLength: 3
+        mood:
+          type: string
+        timeAvailable:
+          type: string
+        priority:
+          type: string
+          enum: [low, medium, high]
+        sleepHours:
+          type: number
+          minimum: 0
+          maximum: 24
+        stressLevel:
+          type: string
+          enum: [low, medium, high]
+        deadline:
+          type: string
+          enum: [none, today, this_week, later]
+        useAi:
+          type: boolean
+      required:
+        - problem
+    Decision:
+      type: object
+      properties:
+        id:
+          type: integer
+        problem:
+          type: string
+        mood:
+          type: string
+          nullable: true
+        timeAvailable:
+          type: string
+          nullable: true
+        priority:
+          type: string
+          nullable: true
+        sleepHours:
+          type: number
+          nullable: true
+        stressLevel:
+          type: string
+          nullable: true
+        deadline:
+          type: string
+          nullable: true
+        ruleDecision:
+          type: string
+        ruleExplanation:
+          type: string
+        finalDecision:
+          type: string
+        explanation:
+          type: string
+        confidence:
+          type: integer
+        aiUsed:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - id
+        - problem
+        - ruleDecision
+        - ruleExplanation
+        - finalDecision
+        - explanation
+        - confidence
+        - aiUsed
+        - createdAt
+    DecisionDashboard:
+      type: object
+      properties:
+        todayCount:
+          type: integer
+        totalCount:
+          type: integer
+        aiEnhancedCount:
+          type: integer
+        averageConfidence:
+          type: integer
+        recentDecisions:
+          type: array
+          items:
+            $ref: "#/components/schemas/Decision"
+        moodBreakdown:
+          type: array
+          items:
+            type: object
+            properties:
+              label:
+                type: string
+              count:
+                type: integer
+            required:
+              - label
+              - count
+      required:
+        - todayCount
+        - totalCount
+        - aiEnhancedCount
+        - averageConfidence
+        - recentDecisions
+        - moodBreakdown
