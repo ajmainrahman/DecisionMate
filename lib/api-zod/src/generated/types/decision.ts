@@ -20,6 +20,7 @@ export interface Decision {
   budgetImpact?: string | null;
   socialInfluence?: string | null;
   gutFeeling?: string | null;
+  category?: string | null;
   outcome?: string | null;
   outcomeNote?: string | null;
   ruleDecision: string;

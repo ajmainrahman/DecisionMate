@@ -8,7 +8,6 @@
 import * as zod from "zod";
 
 /**
- * Returns server health status
  * @summary Health check
  */
 export const HealthCheckResponse = zod.object({
@@ -22,6 +21,7 @@ export const ListDecisionsQueryParams = zod.object({
   search: zod.coerce.string().optional(),
   mood: zod.coerce.string().optional(),
   priority: zod.enum(["low", "medium", "high"]).optional(),
+  category: zod.coerce.string().optional(),
 });
 
 export const ListDecisionsResponseItem = zod.object({
@@ -38,6 +38,7 @@ export const ListDecisionsResponseItem = zod.object({
   budgetImpact: zod.string().nullish(),
   socialInfluence: zod.string().nullish(),
   gutFeeling: zod.string().nullish(),
+  category: zod.string().nullish(),
   outcome: zod.string().nullish(),
   outcomeNote: zod.string().nullish(),
   ruleDecision: zod.string(),
@@ -79,7 +80,67 @@ export const CreateDecisionBody = zod.object({
     .enum(["just_me", "close_family", "team", "public"])
     .optional(),
   gutFeeling: zod.enum(["go_for_it", "unsure", "avoid_it"]).optional(),
+  category: zod
+    .enum(["work", "health", "finance", "relationships", "personal", "other"])
+    .optional(),
   useAi: zod.boolean().optional(),
+});
+
+/**
+ * @summary Decision dashboard summary
+ */
+export const GetDecisionDashboardResponse = zod.object({
+  todayCount: zod.number(),
+  totalCount: zod.number(),
+  aiEnhancedCount: zod.number(),
+  averageConfidence: zod.number(),
+  streak: zod.number(),
+  outcomeStats: zod.object({
+    great: zod.number(),
+    okay: zod.number(),
+    regret: zod.number(),
+    pending: zod.number(),
+  }),
+  patternInsights: zod.array(zod.string()),
+  categoryBreakdown: zod.array(
+    zod.object({
+      label: zod.string(),
+      count: zod.number(),
+    }),
+  ),
+  recentDecisions: zod.array(
+    zod.object({
+      id: zod.number(),
+      problem: zod.string(),
+      mood: zod.string().nullish(),
+      timeAvailable: zod.string().nullish(),
+      priority: zod.string().nullish(),
+      sleepHours: zod.number().nullish(),
+      stressLevel: zod.string().nullish(),
+      deadline: zod.string().nullish(),
+      energyLevel: zod.string().nullish(),
+      importance: zod.string().nullish(),
+      budgetImpact: zod.string().nullish(),
+      socialInfluence: zod.string().nullish(),
+      gutFeeling: zod.string().nullish(),
+      category: zod.string().nullish(),
+      outcome: zod.string().nullish(),
+      outcomeNote: zod.string().nullish(),
+      ruleDecision: zod.string(),
+      ruleExplanation: zod.string(),
+      finalDecision: zod.string(),
+      explanation: zod.string(),
+      confidence: zod.number(),
+      aiUsed: zod.boolean(),
+      createdAt: zod.coerce.date(),
+    }),
+  ),
+  moodBreakdown: zod.array(
+    zod.object({
+      label: zod.string(),
+      count: zod.number(),
+    }),
+  ),
 });
 
 /**
@@ -115,6 +176,7 @@ export const UpdateDecisionOutcomeResponse = zod.object({
   budgetImpact: zod.string().nullish(),
   socialInfluence: zod.string().nullish(),
   gutFeeling: zod.string().nullish(),
+  category: zod.string().nullish(),
   outcome: zod.string().nullish(),
   outcomeNote: zod.string().nullish(),
   ruleDecision: zod.string(),
@@ -124,46 +186,4 @@ export const UpdateDecisionOutcomeResponse = zod.object({
   confidence: zod.number(),
   aiUsed: zod.boolean(),
   createdAt: zod.coerce.date(),
-});
-
-/**
- * @summary Decision dashboard summary
- */
-export const GetDecisionDashboardResponse = zod.object({
-  todayCount: zod.number(),
-  totalCount: zod.number(),
-  aiEnhancedCount: zod.number(),
-  averageConfidence: zod.number(),
-  recentDecisions: zod.array(
-    zod.object({
-      id: zod.number(),
-      problem: zod.string(),
-      mood: zod.string().nullish(),
-      timeAvailable: zod.string().nullish(),
-      priority: zod.string().nullish(),
-      sleepHours: zod.number().nullish(),
-      stressLevel: zod.string().nullish(),
-      deadline: zod.string().nullish(),
-      energyLevel: zod.string().nullish(),
-      importance: zod.string().nullish(),
-      budgetImpact: zod.string().nullish(),
-      socialInfluence: zod.string().nullish(),
-      gutFeeling: zod.string().nullish(),
-      outcome: zod.string().nullish(),
-      outcomeNote: zod.string().nullish(),
-      ruleDecision: zod.string(),
-      ruleExplanation: zod.string(),
-      finalDecision: zod.string(),
-      explanation: zod.string(),
-      confidence: zod.number(),
-      aiUsed: zod.boolean(),
-      createdAt: zod.coerce.date(),
-    }),
-  ),
-  moodBreakdown: zod.array(
-    zod.object({
-      label: zod.string(),
-      count: zod.number(),
-    }),
-  ),
 });

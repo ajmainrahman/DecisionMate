@@ -35,7 +35,6 @@ type Awaited<O> = O extends AwaitedInput<infer T> ? T : never;
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
 /**
- * Returns server health status
  * @summary Health check
  */
 export const getHealthCheckUrl = () => {
@@ -291,6 +290,81 @@ export const useCreateDecision = <
 };
 
 /**
+ * @summary Decision dashboard summary
+ */
+export const getGetDecisionDashboardUrl = () => {
+  return `/api/decisions/dashboard`;
+};
+
+export const getDecisionDashboard = async (
+  options?: RequestInit,
+): Promise<DecisionDashboard> => {
+  return customFetch<DecisionDashboard>(getGetDecisionDashboardUrl(), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getGetDecisionDashboardQueryKey = () => {
+  return [`/api/decisions/dashboard`] as const;
+};
+
+export const getGetDecisionDashboardQueryOptions = <
+  TData = Awaited<ReturnType<typeof getDecisionDashboard>>,
+  TError = ErrorType<unknown>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof getDecisionDashboard>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getGetDecisionDashboardQueryKey();
+
+  const queryFn: QueryFunction<
+    Awaited<ReturnType<typeof getDecisionDashboard>>
+  > = ({ signal }) => getDecisionDashboard({ signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof getDecisionDashboard>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type GetDecisionDashboardQueryResult = NonNullable<
+  Awaited<ReturnType<typeof getDecisionDashboard>>
+>;
+export type GetDecisionDashboardQueryError = ErrorType<unknown>;
+
+/**
+ * @summary Decision dashboard summary
+ */
+
+export function useGetDecisionDashboard<
+  TData = Awaited<ReturnType<typeof getDecisionDashboard>>,
+  TError = ErrorType<unknown>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof getDecisionDashboard>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getGetDecisionDashboardQueryOptions(options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
+
+/**
  * @summary Delete a saved decision
  */
 export const getDeleteDecisionUrl = (id: number) => {
@@ -460,78 +534,3 @@ export const useUpdateDecisionOutcome = <
 > => {
   return useMutation(getUpdateDecisionOutcomeMutationOptions(options));
 };
-
-/**
- * @summary Decision dashboard summary
- */
-export const getGetDecisionDashboardUrl = () => {
-  return `/api/decisions/dashboard`;
-};
-
-export const getDecisionDashboard = async (
-  options?: RequestInit,
-): Promise<DecisionDashboard> => {
-  return customFetch<DecisionDashboard>(getGetDecisionDashboardUrl(), {
-    ...options,
-    method: "GET",
-  });
-};
-
-export const getGetDecisionDashboardQueryKey = () => {
-  return [`/api/decisions/dashboard`] as const;
-};
-
-export const getGetDecisionDashboardQueryOptions = <
-  TData = Awaited<ReturnType<typeof getDecisionDashboard>>,
-  TError = ErrorType<unknown>,
->(options?: {
-  query?: UseQueryOptions<
-    Awaited<ReturnType<typeof getDecisionDashboard>>,
-    TError,
-    TData
-  >;
-  request?: SecondParameter<typeof customFetch>;
-}) => {
-  const { query: queryOptions, request: requestOptions } = options ?? {};
-
-  const queryKey = queryOptions?.queryKey ?? getGetDecisionDashboardQueryKey();
-
-  const queryFn: QueryFunction<
-    Awaited<ReturnType<typeof getDecisionDashboard>>
-  > = ({ signal }) => getDecisionDashboard({ signal, ...requestOptions });
-
-  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
-    Awaited<ReturnType<typeof getDecisionDashboard>>,
-    TError,
-    TData
-  > & { queryKey: QueryKey };
-};
-
-export type GetDecisionDashboardQueryResult = NonNullable<
-  Awaited<ReturnType<typeof getDecisionDashboard>>
->;
-export type GetDecisionDashboardQueryError = ErrorType<unknown>;
-
-/**
- * @summary Decision dashboard summary
- */
-
-export function useGetDecisionDashboard<
-  TData = Awaited<ReturnType<typeof getDecisionDashboard>>,
-  TError = ErrorType<unknown>,
->(options?: {
-  query?: UseQueryOptions<
-    Awaited<ReturnType<typeof getDecisionDashboard>>,
-    TError,
-    TData
-  >;
-  request?: SecondParameter<typeof customFetch>;
-}): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
-  const queryOptions = getGetDecisionDashboardQueryOptions(options);
-
-  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
-    queryKey: QueryKey;
-  };
-
-  return { ...query, queryKey: queryOptions.queryKey };
-}

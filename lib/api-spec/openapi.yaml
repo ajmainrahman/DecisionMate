@@ -8,16 +8,13 @@ servers:
     description: Base API path
 tags:
   - name: health
-    description: Health operations
   - name: decisions
-    description: DecisionMate operations
 paths:
   /healthz:
     get:
       operationId: healthCheck
       tags: [health]
       summary: Health check
-      description: Returns server health status
       responses:
         "200":
           description: Healthy
@@ -47,6 +44,11 @@ paths:
           schema:
             type: string
             enum: [low, medium, high]
+        - name: category
+          in: query
+          required: false
+          schema:
+            type: string
       responses:
         "200":
           description: Saved decisions
@@ -73,6 +75,18 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Decision"
+  /decisions/dashboard:
+    get:
+      operationId: getDecisionDashboard
+      tags: [decisions]
+      summary: Decision dashboard summary
+      responses:
+        "200":
+          description: Dashboard summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DecisionDashboard"
   /decisions/{id}:
     delete:
       operationId: deleteDecision
@@ -106,33 +120,22 @@ paths:
               $ref: "#/components/schemas/UpdateOutcomeRequest"
       responses:
         "200":
-          description: Updated decision
+          description: Updated
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/Decision"
-  /decisions/dashboard:
-    get:
-      operationId: getDecisionDashboard
-      tags: [decisions]
-      summary: Decision dashboard summary
-      responses:
-        "200":
-          description: Dashboard summary
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/DecisionDashboard"
 components:
   schemas:
     HealthStatus:
       type: object
+      required: [status]
       properties:
         status:
           type: string
-      required: [status]
     CreateDecisionRequest:
       type: object
+      required: [problem]
       properties:
         problem:
           type: string
@@ -169,20 +172,23 @@ components:
         gutFeeling:
           type: string
           enum: [go_for_it, unsure, avoid_it]
+        category:
+          type: string
+          enum: [work, health, finance, relationships, personal, other]
         useAi:
           type: boolean
-      required: [problem]
     UpdateOutcomeRequest:
       type: object
+      required: [outcome]
       properties:
         outcome:
           type: string
           enum: [great, okay, regret]
         outcomeNote:
           type: string
-      required: [outcome]
     Decision:
       type: object
+      required: [id, problem, ruleDecision, ruleExplanation, finalDecision, explanation, confidence, aiUsed, createdAt]
       properties:
         id:
           type: integer
@@ -221,6 +227,9 @@ components:
         gutFeeling:
           type: string
           nullable: true
+        category:
+          type: string
+          nullable: true
         outcome:
           type: string
           nullable: true
@@ -242,18 +251,9 @@ components:
         createdAt:
           type: string
           format: date-time
-      required:
-        - id
-        - problem
-        - ruleDecision
-        - ruleExplanation
-        - finalDecision
-        - explanation
-        - confidence
-        - aiUsed
-        - createdAt
     DecisionDashboard:
       type: object
+      required: [todayCount, totalCount, aiEnhancedCount, averageConfidence, recentDecisions, moodBreakdown, streak, outcomeStats, patternInsights, categoryBreakdown]
       properties:
         todayCount:
           type: integer
@@ -263,6 +263,34 @@ components:
           type: integer
         averageConfidence:
           type: integer
+        streak:
+          type: integer
+        outcomeStats:
+          type: object
+          required: [great, okay, regret, pending]
+          properties:
+            great:
+              type: integer
+            okay:
+              type: integer
+            regret:
+              type: integer
+            pending:
+              type: integer
+        patternInsights:
+          type: array
+          items:
+            type: string
+        categoryBreakdown:
+          type: array
+          items:
+            type: object
+            required: [label, count]
+            properties:
+              label:
+                type: string
+              count:
+                type: integer
         recentDecisions:
           type: array
           items:
@@ -271,16 +299,9 @@ components:
           type: array
           items:
             type: object
+            required: [label, count]
             properties:
               label:
                 type: string
               count:
                 type: integer
-            required: [label, count]
-      required:
-        - todayCount
-        - totalCount
-        - aiEnhancedCount
-        - averageConfidence
-        - recentDecisions
-        - moodBreakdown

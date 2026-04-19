@@ -152,7 +152,7 @@ Rule-based decision: ${ruleResult.decision}
 Rule reasoning: ${ruleResult.explanation}`;
 
     const response = await ai.models.generateContent({
-      model: "gemini-3-flash-preview",
+      model: "gemini-2.0-flash",
       contents: prompt,
     });
 

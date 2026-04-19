@@ -85,6 +85,18 @@ export const CreateDecisionRequestGutFeeling = {
   avoid_it: "avoid_it",
 } as const;
 
+export type CreateDecisionRequestCategory =
+  (typeof CreateDecisionRequestCategory)[keyof typeof CreateDecisionRequestCategory];
+
+export const CreateDecisionRequestCategory = {
+  work: "work",
+  health: "health",
+  finance: "finance",
+  relationships: "relationships",
+  personal: "personal",
+  other: "other",
+} as const;
+
 export interface CreateDecisionRequest {
   /** @minLength 3 */
   problem: string;
@@ -103,6 +115,7 @@ export interface CreateDecisionRequest {
   budgetImpact?: CreateDecisionRequestBudgetImpact;
   socialInfluence?: CreateDecisionRequestSocialInfluence;
   gutFeeling?: CreateDecisionRequestGutFeeling;
+  category?: CreateDecisionRequestCategory;
   useAi?: boolean;
 }
 
@@ -134,6 +147,7 @@ export interface Decision {
   budgetImpact?: string | null;
   socialInfluence?: string | null;
   gutFeeling?: string | null;
+  category?: string | null;
   outcome?: string | null;
   outcomeNote?: string | null;
   ruleDecision: string;
@@ -145,6 +159,18 @@ export interface Decision {
   createdAt: string;
 }
 
+export type DecisionDashboardOutcomeStats = {
+  great: number;
+  okay: number;
+  regret: number;
+  pending: number;
+};
+
+export type DecisionDashboardCategoryBreakdownItem = {
+  label: string;
+  count: number;
+};
+
 export type DecisionDashboardMoodBreakdownItem = {
   label: string;
   count: number;
@@ -155,6 +181,10 @@ export interface DecisionDashboard {
   totalCount: number;
   aiEnhancedCount: number;
   averageConfidence: number;
+  streak: number;
+  outcomeStats: DecisionDashboardOutcomeStats;
+  patternInsights: string[];
+  categoryBreakdown: DecisionDashboardCategoryBreakdownItem[];
   recentDecisions: Decision[];
   moodBreakdown: DecisionDashboardMoodBreakdownItem[];
 }
@@ -163,6 +193,7 @@ export type ListDecisionsParams = {
   search?: string;
   mood?: string;
   priority?: ListDecisionsPriority;
+  category?: string;
 };
 
 export type ListDecisionsPriority =

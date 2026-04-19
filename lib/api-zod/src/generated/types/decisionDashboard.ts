@@ -6,13 +6,19 @@
  * OpenAPI spec version: 0.1.0
  */
 import type { Decision } from "./decision";
+import type { DecisionDashboardCategoryBreakdownItem } from "./decisionDashboardCategoryBreakdownItem";
 import type { DecisionDashboardMoodBreakdownItem } from "./decisionDashboardMoodBreakdownItem";
+import type { DecisionDashboardOutcomeStats } from "./decisionDashboardOutcomeStats";
 
 export interface DecisionDashboard {
   todayCount: number;
   totalCount: number;
   aiEnhancedCount: number;
   averageConfidence: number;
+  streak: number;
+  outcomeStats: DecisionDashboardOutcomeStats;
+  patternInsights: string[];
+  categoryBreakdown: DecisionDashboardCategoryBreakdownItem[];
   recentDecisions: Decision[];
   moodBreakdown: DecisionDashboardMoodBreakdownItem[];
 }

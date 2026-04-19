@@ -6,6 +6,7 @@
  * OpenAPI spec version: 0.1.0
  */
 import type { CreateDecisionRequestBudgetImpact } from "./createDecisionRequestBudgetImpact";
+import type { CreateDecisionRequestCategory } from "./createDecisionRequestCategory";
 import type { CreateDecisionRequestDeadline } from "./createDecisionRequestDeadline";
 import type { CreateDecisionRequestEnergyLevel } from "./createDecisionRequestEnergyLevel";
 import type { CreateDecisionRequestGutFeeling } from "./createDecisionRequestGutFeeling";
@@ -32,5 +33,6 @@ export interface CreateDecisionRequest {
   budgetImpact?: CreateDecisionRequestBudgetImpact;
   socialInfluence?: CreateDecisionRequestSocialInfluence;
   gutFeeling?: CreateDecisionRequestGutFeeling;
+  category?: CreateDecisionRequestCategory;
   useAi?: boolean;
 }

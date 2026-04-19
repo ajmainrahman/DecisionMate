@@ -11,4 +11,5 @@ export type ListDecisionsParams = {
   search?: string;
   mood?: string;
   priority?: ListDecisionsPriority;
+  category?: string;
 };
