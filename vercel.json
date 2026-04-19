@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "buildCommand": "pnpm --filter @workspace/decisionmate run build",
+  "buildCommand": "BASE_PATH=/ pnpm --filter @workspace/decisionmate run build",
   "outputDirectory": "artifacts/decisionmate/dist",
   "installCommand": "npm install -g pnpm@latest && pnpm install --frozen-lockfile --ignore-scripts",
   "framework": null,
