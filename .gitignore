@@ -49,3 +49,5 @@ Thumbs.db
 .local/
 .vercel
 .env*.local
+!artifacts/api-server/dist/
+!artifacts/api-server/dist/

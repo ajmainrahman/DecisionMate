@@ -12,8 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Badge } from "@/components/ui/badge";
-import { Sparkles, ArrowRight, Briefcase, Heart, DollarSign, Users, Star, Zap } from "lucide-react";
+import { Sparkles, ArrowRight, Briefcase, Heart, DollarSign, Users, Star, Zap, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 const CATEGORIES = [
@@ -59,13 +58,13 @@ export function DecisionForm() {
       { data: data as any },
       {
         onSuccess: () => {
-          toast({ title: "Decision processed", description: "Here is your recommendation." });
+          toast({ title: "Clarity found", description: "Your recommendation is ready below." });
           form.reset({ problem: "", useAi: true, sleepHours: 7 });
           queryClient.invalidateQueries({ queryKey: getListDecisionsQueryKey() });
           queryClient.invalidateQueries({ queryKey: getGetDecisionDashboardQueryKey() });
         },
         onError: () => {
-          toast({ title: "Error", description: "Failed to process decision. Please try again.", variant: "destructive" });
+          toast({ title: "Something went wrong", description: "Failed to process. Please try again.", variant: "destructive" });
         },
       }
     );
@@ -74,15 +73,29 @@ export function DecisionForm() {
   const selectedCategory = form.watch("category");
 
   return (
-    <Card className="border-primary/10 shadow-sm">
+    <Card className="border-0 shadow-xl overflow-hidden aura-glow"
+      style={{ background: "rgba(255,255,255,0.85)", backdropFilter: "blur(16px)" }}>
+      {/* Card top accent bar */}
+      <div className="h-1 w-full thinkora-gradient" />
       <CardContent className="p-6">
+        {/* Header */}
+        <div className="mb-5">
+          <h2 className="text-2xl font-serif font-semibold mb-1">What's on your mind?</h2>
+          <p className="text-sm text-muted-foreground">
+            Describe your situation and Thinkora will help you think it through.
+          </p>
+        </div>
+
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
             <FormField control={form.control} name="problem" render={({ field }) => (
               <FormItem>
-                <FormLabel className="text-base font-medium">The Situation</FormLabel>
                 <FormControl>
-                  <Textarea placeholder="e.g., Should I take the new job offer even though it means moving to a new city?" className="min-h-[120px] resize-none text-base bg-white/50 focus:bg-white transition-colors" {...field} />
+                  <Textarea
+                    placeholder="e.g., Should I take the new job offer even though it means relocating to another city?"
+                    className="min-h-[120px] resize-none text-base border-border/60 focus:border-primary/50 bg-white/60 focus:bg-white transition-all rounded-xl"
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -90,12 +103,20 @@ export function DecisionForm() {
 
             {/* Category Pills */}
             <div>
-              <p className="text-sm text-muted-foreground mb-2">Category</p>
+              <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide mb-2.5">Category</p>
               <div className="flex flex-wrap gap-2">
                 {CATEGORIES.map(({ value, label, icon: Icon }) => (
                   <button key={value} type="button"
                     onClick={() => form.setValue("category", selectedCategory === value ? undefined : value as any)}
-                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm border transition-all ${selectedCategory === value ? "bg-primary text-primary-foreground border-primary" : "bg-white/50 border-primary/20 hover:border-primary/50 text-muted-foreground"}`}>
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm transition-all font-medium ${
+                      selectedCategory === value
+                        ? "text-white shadow-sm"
+                        : "bg-white border border-border/50 text-muted-foreground hover:border-primary/40 hover:text-primary"
+                    }`}
+                    style={selectedCategory === value ? {
+                      background: "linear-gradient(135deg, hsl(263 72% 52%) 0%, hsl(300 60% 62%) 100%)",
+                      border: "1px solid transparent"
+                    } : {}}>
                     <Icon className="w-3.5 h-3.5" />
                     {label}
                   </button>
@@ -105,16 +126,16 @@ export function DecisionForm() {
 
             <Accordion type="single" collapsible className="w-full">
               <AccordionItem value="context" className="border-b-0">
-                <AccordionTrigger className="hover:no-underline text-sm text-muted-foreground py-2 rounded-md hover:bg-muted/50 px-2 transition-colors">
-                  Add Context (Optional)
+                <AccordionTrigger className="hover:no-underline text-sm text-muted-foreground py-2 rounded-lg hover:bg-primary/5 px-3 transition-colors font-medium">
+                  Add context for deeper insight
                 </AccordionTrigger>
-                <AccordionContent className="pt-4 space-y-4 px-2">
+                <AccordionContent className="pt-4 space-y-4 px-1">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <FormField control={form.control} name="priority" render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Priority</FormLabel>
+                        <FormLabel className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Priority</FormLabel>
                         <Select onValueChange={field.onChange} value={field.value}>
-                          <FormControl><SelectTrigger><SelectValue placeholder="Select priority" /></SelectTrigger></FormControl>
+                          <FormControl><SelectTrigger className="bg-white/70"><SelectValue placeholder="Select priority" /></SelectTrigger></FormControl>
                           <SelectContent>
                             <SelectItem value="low">Low</SelectItem>
                             <SelectItem value="medium">Medium</SelectItem>
@@ -126,9 +147,9 @@ export function DecisionForm() {
 
                     <FormField control={form.control} name="deadline" render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Deadline</FormLabel>
+                        <FormLabel className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Deadline</FormLabel>
                         <Select onValueChange={field.onChange} value={field.value}>
-                          <FormControl><SelectTrigger><SelectValue placeholder="When is it due?" /></SelectTrigger></FormControl>
+                          <FormControl><SelectTrigger className="bg-white/70"><SelectValue placeholder="When is it due?" /></SelectTrigger></FormControl>
                           <SelectContent>
                             <SelectItem value="none">No deadline</SelectItem>
                             <SelectItem value="today">Today</SelectItem>
@@ -141,9 +162,9 @@ export function DecisionForm() {
 
                     <FormField control={form.control} name="stressLevel" render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Stress Level</FormLabel>
+                        <FormLabel className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Stress Level</FormLabel>
                         <Select onValueChange={field.onChange} value={field.value}>
-                          <FormControl><SelectTrigger><SelectValue placeholder="How do you feel?" /></SelectTrigger></FormControl>
+                          <FormControl><SelectTrigger className="bg-white/70"><SelectValue placeholder="How do you feel?" /></SelectTrigger></FormControl>
                           <SelectContent>
                             <SelectItem value="low">Calm</SelectItem>
                             <SelectItem value="medium">A bit tense</SelectItem>
@@ -155,9 +176,9 @@ export function DecisionForm() {
 
                     <FormField control={form.control} name="energyLevel" render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Energy Level</FormLabel>
+                        <FormLabel className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Energy Level</FormLabel>
                         <Select onValueChange={field.onChange} value={field.value}>
-                          <FormControl><SelectTrigger><SelectValue placeholder="How's your energy?" /></SelectTrigger></FormControl>
+                          <FormControl><SelectTrigger className="bg-white/70"><SelectValue placeholder="How's your energy?" /></SelectTrigger></FormControl>
                           <SelectContent>
                             <SelectItem value="low">Low / Tired</SelectItem>
                             <SelectItem value="medium">Moderate</SelectItem>
@@ -169,9 +190,9 @@ export function DecisionForm() {
 
                     <FormField control={form.control} name="importance" render={({ field }) => (
                       <FormItem>
-                        <FormLabel>How important is this?</FormLabel>
+                        <FormLabel className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Importance</FormLabel>
                         <Select onValueChange={field.onChange} value={field.value}>
-                          <FormControl><SelectTrigger><SelectValue placeholder="Select importance" /></SelectTrigger></FormControl>
+                          <FormControl><SelectTrigger className="bg-white/70"><SelectValue placeholder="How significant?" /></SelectTrigger></FormControl>
                           <SelectContent>
                             <SelectItem value="minor">Minor</SelectItem>
                             <SelectItem value="moderate">Moderate</SelectItem>
@@ -184,9 +205,9 @@ export function DecisionForm() {
 
                     <FormField control={form.control} name="gutFeeling" render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Gut Feeling</FormLabel>
+                        <FormLabel className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Gut Feeling</FormLabel>
                         <Select onValueChange={field.onChange} value={field.value}>
-                          <FormControl><SelectTrigger><SelectValue placeholder="What's your instinct?" /></SelectTrigger></FormControl>
+                          <FormControl><SelectTrigger className="bg-white/70"><SelectValue placeholder="What's your instinct?" /></SelectTrigger></FormControl>
                           <SelectContent>
                             <SelectItem value="go_for_it">Go for it</SelectItem>
                             <SelectItem value="unsure">Unsure</SelectItem>
@@ -198,9 +219,12 @@ export function DecisionForm() {
 
                     <FormField control={form.control} name="sleepHours" render={({ field }) => (
                       <FormItem className="col-span-full">
-                        <FormLabel>Hours of sleep last night: {field.value}</FormLabel>
+                        <FormLabel className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                          Sleep last night: <span className="text-foreground font-semibold">{field.value}h</span>
+                        </FormLabel>
                         <FormControl>
-                          <Slider min={0} max={12} step={0.5} defaultValue={[field.value ?? 7]} onValueChange={(vals) => field.onChange(vals[0])} className="pt-2" />
+                          <Slider min={0} max={12} step={0.5} defaultValue={[field.value ?? 7]}
+                            onValueChange={(vals) => field.onChange(vals[0])} className="pt-2" />
                         </FormControl>
                       </FormItem>
                     )} />
@@ -209,19 +233,25 @@ export function DecisionForm() {
               </AccordionItem>
             </Accordion>
 
-            <div className="flex items-center justify-between pt-2">
+            <div className="flex items-center justify-between pt-1 gap-3">
               <FormField control={form.control} name="useAi" render={({ field }) => (
-                <FormItem className="flex flex-row items-center space-x-3 space-y-0 rounded-md border p-3 bg-white/50">
+                <FormItem className="flex flex-row items-center space-x-2.5 space-y-0 rounded-xl border border-border/50 p-3 bg-white/50 flex-1">
                   <FormControl>
                     <Switch checked={field.value} onCheckedChange={field.onChange} />
                   </FormControl>
-                  <FormLabel className="text-sm font-medium flex items-center gap-1.5">
-                    <Sparkles className="h-3.5 w-3.5 text-secondary" /> AI Enhanced
+                  <FormLabel className="text-sm font-medium flex items-center gap-1.5 cursor-pointer">
+                    <Sparkles className="h-3.5 w-3.5" style={{ color: "hsl(300 60% 62%)" }} />
+                    AI Enhanced
                   </FormLabel>
                 </FormItem>
               )} />
-              <Button type="submit" size="lg" className="font-medium px-8 transition-all hover:scale-[1.02]" disabled={createDecision.isPending}>
-                {createDecision.isPending ? "Thinking..." : <> Decide <ArrowRight className="ml-2 h-4 w-4" /> </>}
+              <Button type="submit" size="lg"
+                className="font-semibold px-7 rounded-xl border-0 text-white transition-all hover:scale-[1.02] hover:shadow-lg shrink-0"
+                style={{ background: "linear-gradient(135deg, hsl(263 72% 52%) 0%, hsl(300 60% 62%) 100%)" }}
+                disabled={createDecision.isPending}>
+                {createDecision.isPending
+                  ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Thinking…</>
+                  : <> Decide <ArrowRight className="ml-2 h-4 w-4" /> </>}
               </Button>
             </div>
           </form>
