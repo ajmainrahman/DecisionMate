@@ -112,10 +112,6 @@ export default function Home() {
           </p>
         </div>
 
-        {/* Footer note */}
-        <p className="text-xs relative z-10" style={{ color: "rgba(245,240,232,0.3)" }}>
-          Powered by rule-based reasoning + Gemini AI
-        </p>
       </div>
 
       {/* RIGHT PANEL — cream, the form */}
