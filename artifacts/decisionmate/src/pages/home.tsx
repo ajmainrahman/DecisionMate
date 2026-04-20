@@ -80,7 +80,7 @@ export default function Home() {
 
       {/* LEFT PANEL — forest green, branding + atmosphere */}
       <div
-        className="lg:w-[42%] flex flex-col justify-between px-10 py-10 lg:py-12 relative overflow-hidden"
+        className="lg:w-[42%] flex flex-col justify-center px-10 py-10 lg:py-12 relative overflow-hidden"
         style={{ background: "linear-gradient(160deg, #3d5a47 0%, #2b3f32 100%)" }}
       >
         {/* Decorative circle */}
@@ -89,27 +89,30 @@ export default function Home() {
         <div className="absolute -bottom-32 -left-16 w-64 h-64 rounded-full opacity-8"
           style={{ background: "radial-gradient(circle, #f5f0e8 0%, transparent 70%)" }} />
 
-        {/* Logo row */}
-        <div className="flex items-center gap-2.5 relative z-10">
-          <ThinkoraLogo size={34} light />
-          <ThinkoraWordmark light />
-        </div>
+        {/* All content centered together */}
+        <div className="relative z-10 flex flex-col gap-10">
+          {/* Logo row */}
+          <div className="flex items-center gap-2.5">
+            <ThinkoraLogo size={34} light />
+            <ThinkoraWordmark light />
+          </div>
 
-        {/* Hero text */}
-        <div className="relative z-10 py-8 lg:py-0">
-          <p className="text-xs font-semibold uppercase tracking-widest mb-5" style={{ color: "rgba(245,240,232,0.45)" }}>
-            AI-Assisted Clarity
-          </p>
-          <h1
-            className="font-serif text-5xl lg:text-[3.4rem] xl:text-[3.8rem] leading-[1.1] mb-6"
-            style={{ color: "#f5f0e8" }}
-          >
-            Your decision,<br />
-            <span style={{ color: "rgba(245,240,232,0.62)", fontStyle: "italic" }}>clearer.</span>
-          </h1>
-          <p className="text-base leading-relaxed max-w-xs" style={{ color: "rgba(245,240,232,0.6)" }}>
-            Describe what you're weighing. Thinkora reasons through it alongside you — practically and without judgment.
-          </p>
+          {/* Hero text */}
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-widest mb-5" style={{ color: "rgba(245,240,232,0.45)" }}>
+              AI-Assisted Clarity
+            </p>
+            <h1
+              className="font-serif text-5xl lg:text-[3.4rem] xl:text-[3.8rem] leading-[1.1] mb-6"
+              style={{ color: "#f5f0e8" }}
+            >
+              Your decision,<br />
+              <span style={{ color: "rgba(245,240,232,0.62)", fontStyle: "italic" }}>clearer.</span>
+            </h1>
+            <p className="text-base leading-relaxed max-w-xs" style={{ color: "rgba(245,240,232,0.6)" }}>
+              Describe what you're weighing. Thinkora reasons through it alongside you — practically and without judgment.
+            </p>
+          </div>
         </div>
 
       </div>
