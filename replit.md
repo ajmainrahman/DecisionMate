@@ -39,3 +39,20 @@ DecisionMate is a full-stack AI-assisted daily decision-making web app. Users en
 - `lib/api-spec/openapi.yaml` — API contract for generated frontend hooks and backend validation
 
 See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and package details.
+
+## Replit Setup
+
+The project was migrated from Vercel to Replit. On Vercel it used serverless functions; on Replit both services run as long-lived processes.
+
+### Workflows
+- **Start application** — runs the Vite dev server for the React frontend on port 18160
+- **Start API Server** — builds and runs the Express API server on port 8080
+
+The Vite dev server proxies `/api` requests to the Express API server (port 8080) during development.
+
+### Environment Variables
+- `DATABASE_URL` and `PG*` — provisioned by Replit PostgreSQL database
+- `AI_INTEGRATIONS_GEMINI_BASE_URL` and `AI_INTEGRATIONS_GEMINI_API_KEY` — provisioned by Replit Gemini AI integration
+
+### Security
+- `minimumReleaseAge: 1440` is enabled in `pnpm-workspace.yaml` for supply-chain attack defense (was disabled for Vercel)
