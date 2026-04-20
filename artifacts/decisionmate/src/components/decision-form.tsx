@@ -90,7 +90,7 @@ export function DecisionForm() {
 
             {/* Category Pills */}
             <div>
-              <FormLabel className="text-sm text-muted-foreground mb-2 block">Category</FormLabel>
+              <p className="text-sm text-muted-foreground mb-2">Category</p>
               <div className="flex flex-wrap gap-2">
                 {CATEGORIES.map(({ value, label, icon: Icon }) => (
                   <button key={value} type="button"
