@@ -1,42 +1,33 @@
 interface ThinkoraLogoProps {
   size?: number;
-  light?: boolean;
 }
 
-export function ThinkoraLogo({ size = 36, light = false }: ThinkoraLogoProps) {
-  const cream = "#f5f0e8";
-  const green = "#3d5a47";
-
+export function ThinkoraLogo({ size = 32 }: ThinkoraLogoProps) {
   return (
-    <svg width={size} height={size} viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="20" cy="20" r="18" fill={light ? cream : green} />
-      <circle cx="20" cy="20" r="13.5" fill="none"
-        stroke={light ? "rgba(61,90,71,0.18)" : "rgba(245,240,232,0.14)"}
-        strokeWidth="1" />
-      <path
-        d="M12 20 C14 14.5, 26 14.5, 28 20 C26 25.5, 14 25.5, 12 20 Z"
-        fill="none"
-        stroke={light ? green : cream}
-        strokeWidth="1.5"
-        strokeLinecap="round"
-      />
-      <circle cx="20" cy="20" r="2.8" fill={light ? green : cream} />
-      <circle cx="21.8" cy="18.3" r="0.9" fill={light ? "rgba(245,240,232,0.5)" : "rgba(245,240,232,0.45)"} />
+    <svg width={size} height={size} viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+      {/* Outer ring — warm sand */}
+      <circle cx="16" cy="16" r="15" stroke="#c9956b" strokeWidth="1.2" fill="none" />
+      {/* Inner circle — warm brown fill */}
+      <circle cx="16" cy="16" r="10" fill="#2d2520" />
+      {/* Small dot — sand accent */}
+      <circle cx="16" cy="16" r="3" fill="#f8f5f0" />
+      {/* Highlight */}
+      <circle cx="17.4" cy="14.6" r="1.1" fill="rgba(201,149,107,0.7)" />
     </svg>
   );
 }
 
-export function ThinkoraWordmark({ light = false, size = "default" }: { light?: boolean; size?: "default" | "lg" | "xl"; className?: string }) {
-  const color = light ? "#f5f0e8" : "#2b3f32";
-  const fontSize = size === "xl" ? "1.8rem" : size === "lg" ? "1.45rem" : "1.2rem";
+export function ThinkoraWordmark({ className = "", size = "default" }: { className?: string; size?: "default" | "lg" | "xl" }) {
+  const fontSize = size === "xl" ? "2rem" : size === "lg" ? "1.5rem" : "1.15rem";
   return (
     <span
+      className={className}
       style={{
-        fontFamily: "'Fraunces', serif",
+        fontFamily: "'Cormorant Garamond', serif",
         fontWeight: 600,
         fontSize,
-        color,
-        letterSpacing: "-0.015em",
+        color: "#2d2520",
+        letterSpacing: "0.01em",
       }}
     >
       Thinkora

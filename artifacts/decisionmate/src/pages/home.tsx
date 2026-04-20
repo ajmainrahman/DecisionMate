@@ -41,6 +41,12 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
+const BG = "#f8f5f0";
+const BROWN = "#2d2520";
+const BROWN_MID = "#6b5e55";
+const SAND = "#c9956b";
+const BORDER = "rgba(45,37,32,0.09)";
+
 export default function Home() {
   const [, navigate] = useLocation();
   const { setFreshDecision } = useThinkoraContext();
@@ -76,128 +82,119 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-[100dvh] flex flex-col lg:flex-row">
+    <div className="min-h-[100dvh] flex flex-col" style={{ background: BG }}>
 
-      {/* LEFT PANEL — forest green, branding + atmosphere */}
-      <div
-        className="lg:w-[42%] flex flex-col justify-center px-10 py-10 lg:py-12 relative overflow-hidden"
-        style={{ background: "linear-gradient(160deg, #3d5a47 0%, #2b3f32 100%)" }}
-      >
-        {/* Decorative circle */}
-        <div className="absolute -top-24 -right-24 w-72 h-72 rounded-full opacity-10"
-          style={{ background: "radial-gradient(circle, #f5f0e8 0%, transparent 70%)" }} />
-        <div className="absolute -bottom-32 -left-16 w-64 h-64 rounded-full opacity-8"
-          style={{ background: "radial-gradient(circle, #f5f0e8 0%, transparent 70%)" }} />
+      {/* Top nav */}
+      <nav className="flex items-center justify-between px-8 py-5">
+        <div className="flex items-center gap-2.5">
+          <ThinkoraLogo size={28} />
+          <ThinkoraWordmark />
+        </div>
+        <button
+          onClick={() => navigate("/decisions")}
+          className="text-sm transition-opacity hover:opacity-60"
+          style={{ color: BROWN_MID, fontFamily: "'DM Sans', sans-serif", fontWeight: 400 }}
+        >
+          View history
+        </button>
+      </nav>
 
-        {/* All content centered together */}
-        <div className="relative z-10 flex flex-col gap-10">
-          {/* Logo row */}
-          <div className="flex items-center gap-2.5">
-            <ThinkoraLogo size={34} light />
-            <ThinkoraWordmark light />
-          </div>
+      {/* Center area */}
+      <div className="flex-1 flex flex-col items-center justify-center px-4 py-10">
+        <div className="w-full max-w-[580px] flex flex-col gap-8">
 
-          {/* Hero text */}
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-widest mb-5" style={{ color: "rgba(245,240,232,0.45)" }}>
-              AI-Assisted Clarity
-            </p>
+          {/* Heading block */}
+          <div className="text-center">
             <h1
-              className="font-serif text-5xl lg:text-[3.4rem] xl:text-[3.8rem] leading-[1.1] mb-6"
-              style={{ color: "#f5f0e8" }}
+              style={{
+                fontFamily: "'Cormorant Garamond', serif",
+                fontWeight: 500,
+                fontSize: "clamp(2.4rem, 5vw, 3.4rem)",
+                lineHeight: 1.15,
+                color: BROWN,
+                letterSpacing: "-0.01em",
+              }}
             >
-              Your decision,<br />
-              <span style={{ color: "rgba(245,240,232,0.62)", fontStyle: "italic" }}>clearer.</span>
+              What are you<br />
+              <em style={{ fontWeight: 400, color: BROWN_MID }}>weighing right now?</em>
             </h1>
-            <p className="text-base leading-relaxed max-w-xs" style={{ color: "rgba(245,240,232,0.6)" }}>
-              Describe what you're weighing. Thinkora reasons through it alongside you — practically and without judgment.
+            <p
+              className="mt-3 text-base leading-relaxed"
+              style={{ fontFamily: "'DM Sans', sans-serif", color: BROWN_MID, fontWeight: 300 }}
+            >
+              Describe it simply. Thinkora will help you see clearly.
             </p>
           </div>
-        </div>
 
-      </div>
-
-      {/* RIGHT PANEL — cream, the form */}
-      <div
-        className="flex-1 flex flex-col overflow-y-auto"
-        style={{ background: "#f5f0e8" }}
-      >
-        {/* Top bar */}
-        <div className="flex items-center justify-between px-8 py-5 border-b" style={{ borderColor: "rgba(61,90,71,0.1)" }}>
-          <p className="text-sm font-medium" style={{ color: "#3d5a47" }}>What's on your mind?</p>
-          <button
-            onClick={() => navigate("/decisions")}
-            className="text-sm font-medium px-4 py-1.5 rounded-full transition-all hover:opacity-80"
-            style={{ background: "rgba(61,90,71,0.1)", color: "#3d5a47" }}
-          >
-            View history →
-          </button>
-        </div>
-
-        {/* Scrollable form area */}
-        <div className="flex-1 flex items-start justify-center px-6 sm:px-10 py-10">
+          {/* Form card */}
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="w-full max-w-xl flex flex-col gap-6">
+            <form onSubmit={form.handleSubmit(onSubmit)}>
+              <div className="rounded-2xl bg-white overflow-hidden" style={{ border: `1px solid ${BORDER}`, boxShadow: "0 4px 24px rgba(30,22,14,0.07)" }}>
 
-              {/* Situation card */}
-              <div className="rounded-2xl bg-white shadow-sm overflow-hidden"
-                style={{ border: "1px solid rgba(61,90,71,0.1)" }}>
-                <div className="px-5 pt-5 pb-1">
-                  <p className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: "rgba(61,90,71,0.45)" }}>
-                    The Situation
+                {/* Textarea section */}
+                <div className="px-6 pt-6 pb-4">
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.12em] mb-3" style={{ color: "rgba(45,37,32,0.35)", fontFamily: "'DM Sans', sans-serif" }}>
+                    The situation
                   </p>
                   <FormField control={form.control} name="problem" render={({ field }) => (
                     <FormItem>
                       <FormControl>
                         <Textarea
                           placeholder="e.g., Should I take the new job offer even though it means moving to a new city?"
-                          className="min-h-[140px] resize-none text-base border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 p-0 font-sans"
-                          style={{ color: "#2b3f32", caretColor: "#3d5a47" }}
+                          className="min-h-[130px] resize-none text-[15px] border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 p-0 leading-relaxed"
+                          style={{ fontFamily: "'DM Sans', sans-serif", color: BROWN, caretColor: SAND }}
                           {...field}
                         />
                       </FormControl>
-                      <FormMessage className="text-xs pb-2" />
+                      <FormMessage className="text-xs mt-1" />
                     </FormItem>
                   )} />
                 </div>
 
+                {/* Divider */}
+                <div className="h-px mx-6" style={{ background: BORDER }} />
+
                 {/* Category */}
-                <div className="px-5 pt-3 pb-4" style={{ borderTop: "1px solid rgba(61,90,71,0.07)" }}>
-                  <p className="text-xs font-medium mb-2.5" style={{ color: "rgba(61,90,71,0.5)" }}>Category</p>
+                <div className="px-6 py-4">
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.12em] mb-3" style={{ color: "rgba(45,37,32,0.35)", fontFamily: "'DM Sans', sans-serif" }}>
+                    Category
+                  </p>
                   <div className="flex flex-wrap gap-2">
                     {CATEGORIES.map(({ value, label, icon: Icon }) => (
                       <button key={value} type="button"
                         onClick={() => form.setValue("category", selectedCategory === value ? undefined : value as any)}
                         className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all"
-                        style={selectedCategory === value ? {
-                          background: "#3d5a47", color: "#f5f0e8", border: "1px solid #3d5a47"
-                        } : {
-                          background: "transparent", color: "rgba(61,90,71,0.7)", border: "1px solid rgba(61,90,71,0.2)"
-                        }}>
-                        <Icon className="w-3 h-3" />
-                        {label}
+                        style={selectedCategory === value
+                          ? { background: BROWN, color: "#f8f5f0", border: `1px solid ${BROWN}` }
+                          : { background: "transparent", color: BROWN_MID, border: `1px solid rgba(45,37,32,0.14)` }
+                        }
+                      >
+                        <Icon className="w-3 h-3" /> {label}
                       </button>
                     ))}
                   </div>
                 </div>
-              </div>
 
-              {/* Add context toggle */}
-              <div>
-                <button type="button" onClick={() => setShowContext(!showContext)}
-                  className="flex items-center gap-1.5 text-sm font-medium transition-colors"
-                  style={{ color: showContext ? "#3d5a47" : "rgba(61,90,71,0.5)" }}>
-                  <ChevronDown className={`w-4 h-4 transition-transform ${showContext ? "rotate-180" : ""}`} />
-                  {showContext ? "Hide context" : "Add context for better results"}
-                </button>
+                {/* Divider */}
+                <div className="h-px mx-6" style={{ background: BORDER }} />
 
+                {/* Context toggle */}
+                <div className="px-6 py-3">
+                  <button type="button" onClick={() => setShowContext(!showContext)}
+                    className="flex items-center gap-1.5 text-xs transition-opacity hover:opacity-70"
+                    style={{ color: BROWN_MID, fontFamily: "'DM Sans', sans-serif" }}>
+                    <ChevronDown className={`w-3.5 h-3.5 transition-transform ${showContext ? "rotate-180" : ""}`} />
+                    {showContext ? "Hide context" : "Add context for better results"}
+                  </button>
+                </div>
+
+                {/* Context fields */}
                 {showContext && (
-                  <div className="mt-4 rounded-2xl bg-white p-5 grid grid-cols-2 sm:grid-cols-3 gap-3"
-                    style={{ border: "1px solid rgba(61,90,71,0.1)" }}>
+                  <div className="px-6 pb-5 grid grid-cols-2 sm:grid-cols-3 gap-3 border-t pt-4" style={{ borderColor: BORDER }}>
                     {[
                       { name: "priority" as const, label: "Priority", options: [{ v: "low", l: "Low" }, { v: "medium", l: "Medium" }, { v: "high", l: "High" }] },
                       { name: "deadline" as const, label: "Deadline", options: [{ v: "none", l: "No deadline" }, { v: "today", l: "Today" }, { v: "this_week", l: "This week" }, { v: "later", l: "Later" }] },
-                      { name: "stressLevel" as const, label: "Stress level", options: [{ v: "low", l: "Calm" }, { v: "medium", l: "A bit tense" }, { v: "high", l: "Overwhelmed" }] },
+                      { name: "stressLevel" as const, label: "Stress", options: [{ v: "low", l: "Calm" }, { v: "medium", l: "Tense" }, { v: "high", l: "Overwhelmed" }] },
                       { name: "energyLevel" as const, label: "Energy", options: [{ v: "low", l: "Tired" }, { v: "medium", l: "Moderate" }, { v: "high", l: "Alert" }] },
                       { name: "importance" as const, label: "Importance", options: [{ v: "minor", l: "Minor" }, { v: "moderate", l: "Moderate" }, { v: "major", l: "Major" }, { v: "life_changing", l: "Life-changing" }] },
                       { name: "gutFeeling" as const, label: "Gut feeling", options: [{ v: "go_for_it", l: "Go for it" }, { v: "unsure", l: "Unsure" }, { v: "avoid_it", l: "Avoid it" }] },
@@ -206,8 +203,7 @@ export default function Home() {
                         <FormItem>
                           <Select onValueChange={field.onChange} value={field.value as string}>
                             <FormControl>
-                              <SelectTrigger className="text-sm h-9 rounded-xl"
-                                style={{ background: "#f5f0e8", border: "1px solid rgba(61,90,71,0.15)" }}>
+                              <SelectTrigger className="text-xs h-8 rounded-lg" style={{ background: BG, border: `1px solid ${BORDER}`, color: BROWN }}>
                                 <SelectValue placeholder={label} />
                               </SelectTrigger>
                             </FormControl>
@@ -218,11 +214,10 @@ export default function Home() {
                         </FormItem>
                       )} />
                     ))}
-
                     <FormField control={form.control} name="sleepHours" render={({ field }) => (
                       <FormItem className="col-span-full">
-                        <div className="text-xs mb-2" style={{ color: "rgba(61,90,71,0.6)" }}>
-                          Sleep last night: <span className="font-semibold" style={{ color: "#2b3f32" }}>{field.value}h</span>
+                        <div className="text-xs mb-2" style={{ color: "rgba(45,37,32,0.45)", fontFamily: "'DM Sans', sans-serif" }}>
+                          Sleep last night — <span style={{ color: BROWN, fontWeight: 500 }}>{field.value}h</span>
                         </div>
                         <FormControl>
                           <Slider min={0} max={12} step={0.5} defaultValue={[field.value ?? 7]}
@@ -232,33 +227,36 @@ export default function Home() {
                     )} />
                   </div>
                 )}
-              </div>
 
-              {/* Bottom row */}
-              <div className="flex items-center justify-between">
-                <FormField control={form.control} name="useAi" render={({ field }) => (
-                  <FormItem className="flex items-center gap-2 space-y-0">
-                    <FormControl>
-                      <Switch checked={field.value} onCheckedChange={field.onChange}
-                        className="data-[state=checked]:bg-[#3d5a47]" />
-                    </FormControl>
-                    <span className="text-sm font-medium flex items-center gap-1.5" style={{ color: "#3d5a47" }}>
-                      <Sparkles className="w-3.5 h-3.5" style={{ color: "#b05a3a" }} />
-                      AI Enhanced
-                    </span>
-                  </FormItem>
-                )} />
+                {/* Divider */}
+                <div className="h-px mx-6" style={{ background: BORDER }} />
 
-                <Button
-                  type="submit"
-                  className="rounded-full text-sm font-semibold px-7 py-2.5 border-0 transition-all hover:opacity-90 hover:-translate-y-0.5 hover:shadow-md disabled:opacity-60"
-                  style={{ background: "#3d5a47", color: "#f5f0e8" }}
-                  disabled={createDecision.isPending}
-                >
-                  {createDecision.isPending
-                    ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Thinking…</>
-                    : <>Think it through <ArrowRight className="ml-2 h-4 w-4" /></>}
-                </Button>
+                {/* Bottom action row */}
+                <div className="px-6 py-4 flex items-center justify-between gap-4">
+                  <FormField control={form.control} name="useAi" render={({ field }) => (
+                    <FormItem className="flex items-center gap-2 space-y-0">
+                      <FormControl>
+                        <Switch checked={field.value} onCheckedChange={field.onChange} />
+                      </FormControl>
+                      <span className="flex items-center gap-1.5 text-sm" style={{ color: BROWN_MID, fontFamily: "'DM Sans', sans-serif", fontWeight: 400 }}>
+                        <Sparkles className="w-3.5 h-3.5" style={{ color: SAND }} />
+                        AI Enhanced
+                      </span>
+                    </FormItem>
+                  )} />
+
+                  <Button
+                    type="submit"
+                    disabled={createDecision.isPending}
+                    className="rounded-full px-6 text-sm border-0 transition-all hover:opacity-85 disabled:opacity-50"
+                    style={{ background: BROWN, color: "#f8f5f0", fontFamily: "'DM Sans', sans-serif", fontWeight: 500 }}
+                  >
+                    {createDecision.isPending
+                      ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Thinking…</>
+                      : <>Decide <ArrowRight className="ml-1.5 h-4 w-4" /></>}
+                  </Button>
+                </div>
+
               </div>
             </form>
           </Form>

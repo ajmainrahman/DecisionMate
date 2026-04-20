@@ -21,28 +21,33 @@ const CATEGORY_ICONS: Record<string, any> = {
   relationships: Users, personal: Star, other: Zap,
 };
 
-const GREEN = "#3d5a47";
-const GREEN_DARK = "#2b3f32";
-const CREAM = "#f5f0e8";
-const TERRA = "#b05a3a";
+const BG = "#f8f5f0";
+const BROWN = "#2d2520";
+const BROWN_MID = "#6b5e55";
+const SAND = "#c9956b";
+const BORDER = "rgba(45,37,32,0.09)";
+const SERIF = "'Cormorant Garamond', serif";
+const SANS = "'DM Sans', sans-serif";
 
 function ConfidenceBar({ value }: { value: number }) {
-  const color = value >= 80 ? "#4a7c59" : value >= 60 ? "#c4852a" : "#b05a3a";
+  const color = value >= 80 ? "#5c8c6e" : value >= 60 ? "#c4852a" : "#b05a3a";
   return (
-    <div className="flex items-center gap-2">
-      <div className="flex-1 h-1 rounded-full overflow-hidden" style={{ background: "rgba(61,90,71,0.12)" }}>
-        <div className="h-full rounded-full" style={{ width: `${value}%`, background: color }} />
+    <div className="flex items-center gap-3">
+      <div className="flex-1 h-0.5 rounded-full overflow-hidden" style={{ background: "rgba(45,37,32,0.08)" }}>
+        <div className="h-full rounded-full transition-all" style={{ width: `${value}%`, background: color }} />
       </div>
-      <span className="text-xs font-semibold tabular-nums" style={{ color }}>{value}%</span>
+      <span className="text-xs tabular-nums font-medium" style={{ color, fontFamily: SANS, minWidth: "2.5rem" }}>
+        {value}% confidence
+      </span>
     </div>
   );
 }
 
-function OutcomeButton({ label, icon: Icon, color, onClick }: { label: string; icon: any; color: string; onClick: () => void }) {
+function OutcomeBtn({ label, icon: Icon, color, onClick }: { label: string; icon: any; color: string; onClick: () => void }) {
   return (
     <button onClick={onClick}
-      className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium border transition-all hover:opacity-80"
-      style={{ color, borderColor: color + "40", background: color + "0d" }}>
+      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs transition-opacity hover:opacity-75"
+      style={{ color, background: color + "12", border: `1px solid ${color}28`, fontFamily: SANS }}>
       <Icon className="w-3.5 h-3.5" /> {label}
     </button>
   );
@@ -60,7 +65,6 @@ export default function Decisions() {
     { search: debouncedSearch || undefined, priority: priority as any || undefined },
     { query: { queryKey: getListDecisionsQueryKey({ search: debouncedSearch || undefined, priority: priority as any || undefined }) } }
   );
-
   const { data: stats } = useGetDecisionDashboard({ query: { queryKey: getGetDecisionDashboardQueryKey() } });
   const deleteDecision = useDeleteDecision();
   const updateOutcome = useUpdateDecisionOutcome();
@@ -94,174 +98,157 @@ export default function Decisions() {
   };
 
   return (
-    <div className="min-h-[100dvh]" style={{ background: CREAM }}>
+    <div className="min-h-[100dvh]" style={{ background: BG }}>
 
       {/* Header */}
-      <header className="sticky top-0 z-10 border-b" style={{ background: CREAM, borderColor: "rgba(61,90,71,0.1)" }}>
-        <div className="max-w-4xl mx-auto px-6 h-16 flex items-center justify-between">
-          <button onClick={() => navigate("/")} className="flex items-center gap-2.5 hover:opacity-75 transition-opacity">
-            <ThinkoraLogo size={30} />
+      <header className="sticky top-0 z-10 border-b" style={{ background: BG, borderColor: BORDER }}>
+        <div className="max-w-3xl mx-auto px-6 h-16 flex items-center justify-between">
+          <button onClick={() => navigate("/")} className="flex items-center gap-2.5 transition-opacity hover:opacity-70">
+            <ThinkoraLogo size={26} />
             <ThinkoraWordmark />
           </button>
           <button
             onClick={() => { setFreshDecision(null); navigate("/"); }}
-            className="flex items-center gap-1.5 text-sm font-medium px-4 py-2 rounded-full transition-all hover:opacity-80"
-            style={{ background: GREEN, color: CREAM }}
+            className="flex items-center gap-1.5 text-sm px-4 py-2 rounded-full transition-opacity hover:opacity-75"
+            style={{ background: BROWN, color: BG, fontFamily: SANS, fontWeight: 500 }}
           >
-            <Plus className="w-4 h-4" /> New decision
+            <Plus className="w-3.5 h-3.5" /> New decision
           </button>
         </div>
       </header>
 
-      <main className="max-w-4xl mx-auto px-6 py-10 flex flex-col gap-10">
+      <main className="max-w-3xl mx-auto px-6 py-10 flex flex-col gap-12">
 
         {/* Fresh Result */}
         {freshDecision && (
-          <div>
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-2">
-                <div className="w-2 h-2 rounded-full" style={{ background: TERRA }} />
-                <p className="text-xs font-semibold uppercase tracking-widest" style={{ color: "rgba(61,90,71,0.45)" }}>
-                  {freshDecision.aiUsed ? "AI-Enhanced" : "Rule-Based"} Recommendation
-                </p>
+          <section>
+            <div className="flex items-center justify-between mb-5">
+              <div className="flex items-center gap-2.5">
+                <div className="w-5 h-px" style={{ background: SAND }} />
+                <span className="text-[10px] font-semibold uppercase tracking-[0.12em]" style={{ color: SAND, fontFamily: SANS }}>
+                  {freshDecision.aiUsed ? "AI-enhanced" : "Rule-based"} recommendation
+                </span>
               </div>
               <button onClick={() => setFreshDecision(null)}
-                className="text-xs transition-opacity hover:opacity-60"
-                style={{ color: "rgba(61,90,71,0.4)" }}>
+                className="text-xs transition-opacity hover:opacity-50"
+                style={{ color: BROWN_MID, fontFamily: SANS }}>
                 dismiss
               </button>
             </div>
 
-            <div className="rounded-2xl bg-white overflow-hidden shadow-sm"
-              style={{ border: "1px solid rgba(61,90,71,0.1)" }}>
-              {/* Top accent line */}
-              <div className="h-1" style={{ background: `linear-gradient(90deg, ${GREEN} 0%, ${TERRA} 100%)` }} />
-
-              <div className="p-7">
-                <p className="text-sm italic mb-4 leading-relaxed" style={{ color: "rgba(61,90,71,0.5)" }}>
-                  "{freshDecision.problem}"
+            <div className="rounded-2xl bg-white p-8" style={{ border: `1px solid ${BORDER}`, boxShadow: "0 4px 24px rgba(30,22,14,0.06)" }}>
+              <p className="text-sm italic mb-5 leading-relaxed" style={{ color: BROWN_MID, fontFamily: SERIF }}>
+                "{freshDecision.problem}"
+              </p>
+              <h2 style={{ fontFamily: SERIF, fontWeight: 600, fontSize: "clamp(1.6rem, 3vw, 2.2rem)", lineHeight: 1.2, color: BROWN, marginBottom: "1rem" }}>
+                {freshDecision.finalDecision}
+              </h2>
+              <p className="text-base leading-relaxed mb-6" style={{ color: BROWN_MID, fontFamily: SANS, fontWeight: 300 }}>
+                {freshDecision.explanation}
+              </p>
+              <div className="mb-6">
+                <ConfidenceBar value={freshDecision.confidence} />
+              </div>
+              <div className="pt-5" style={{ borderTop: `1px solid ${BORDER}` }}>
+                <p className="text-[10px] font-semibold uppercase tracking-[0.12em] mb-3" style={{ color: "rgba(45,37,32,0.35)", fontFamily: SANS }}>
+                  Once you've decided — how did it go?
                 </p>
-
-                <h2 className="font-serif text-3xl font-bold leading-tight mb-3" style={{ color: GREEN_DARK }}>
-                  {freshDecision.finalDecision}
-                </h2>
-
-                <p className="text-base leading-relaxed mb-6" style={{ color: "rgba(61,90,71,0.7)" }}>
-                  {freshDecision.explanation}
-                </p>
-
-                <div className="flex items-center gap-3 mb-6">
-                  <span className="text-xs font-semibold uppercase tracking-widest" style={{ color: "rgba(61,90,71,0.4)" }}>Confidence</span>
-                  <div className="flex-1"><ConfidenceBar value={freshDecision.confidence} /></div>
-                </div>
-
-                <div className="pt-5" style={{ borderTop: "1px solid rgba(61,90,71,0.08)" }}>
-                  <p className="text-xs font-medium mb-3 uppercase tracking-widest" style={{ color: "rgba(61,90,71,0.4)" }}>
-                    How did it turn out?
-                  </p>
-                  <div className="flex gap-2 flex-wrap">
-                    <OutcomeButton label="Great outcome" icon={ThumbsUp} color="#4a7c59" onClick={() => handleOutcome(freshDecision.id, "great")} />
-                    <OutcomeButton label="It was okay" icon={Minus} color="#c4852a" onClick={() => handleOutcome(freshDecision.id, "okay")} />
-                    <OutcomeButton label="I regret it" icon={ThumbsDown} color={TERRA} onClick={() => handleOutcome(freshDecision.id, "regret")} />
-                  </div>
+                <div className="flex gap-2 flex-wrap">
+                  <OutcomeBtn label="Great outcome" icon={ThumbsUp} color="#5c8c6e" onClick={() => handleOutcome(freshDecision.id, "great")} />
+                  <OutcomeBtn label="It was okay" icon={Minus} color="#c4852a" onClick={() => handleOutcome(freshDecision.id, "okay")} />
+                  <OutcomeBtn label="I regret it" icon={ThumbsDown} color="#b05a3a" onClick={() => handleOutcome(freshDecision.id, "regret")} />
                 </div>
               </div>
             </div>
-          </div>
+          </section>
         )}
 
-        {/* Stats Row */}
+        {/* Stats */}
         {stats && (
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-widest mb-4" style={{ color: "rgba(61,90,71,0.4)" }}>
-              Overview
-            </p>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <section>
+            <div className="flex items-center gap-2.5 mb-5">
+              <div className="w-5 h-px" style={{ background: SAND }} />
+              <span className="text-[10px] font-semibold uppercase tracking-[0.12em]" style={{ color: SAND, fontFamily: SANS }}>Overview</span>
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-3">
               {[
                 { label: "Today", value: stats.todayCount, sub: "decisions", icon: CheckCircle2 },
                 { label: "Total", value: stats.totalCount, sub: "all time", icon: BarChart3 },
                 { label: "AI Used", value: stats.aiEnhancedCount, sub: "enhanced", icon: BrainCircuit },
                 { label: "Confidence", value: `${stats.averageConfidence}%`, sub: "average", icon: TrendingUp },
               ].map(({ label, value, sub, icon: Icon }) => (
-                <div key={label} className="rounded-2xl bg-white p-5"
-                  style={{ border: "1px solid rgba(61,90,71,0.09)" }}>
+                <div key={label} className="rounded-xl bg-white p-4" style={{ border: `1px solid ${BORDER}` }}>
                   <div className="flex items-center justify-between mb-3">
-                    <span className="text-xs font-medium uppercase tracking-widest" style={{ color: "rgba(61,90,71,0.4)" }}>{label}</span>
-                    <Icon className="w-4 h-4" style={{ color: "rgba(61,90,71,0.3)" }} />
+                    <span className="text-[10px] font-semibold uppercase tracking-[0.1em]" style={{ color: "rgba(45,37,32,0.35)", fontFamily: SANS }}>{label}</span>
+                    <Icon className="w-3.5 h-3.5" style={{ color: "rgba(45,37,32,0.2)" }} />
                   </div>
-                  <div className="font-serif text-3xl font-bold" style={{ color: GREEN_DARK }}>{value}</div>
-                  <div className="text-xs mt-1" style={{ color: "rgba(61,90,71,0.45)" }}>{sub}</div>
+                  <div style={{ fontFamily: SERIF, fontSize: "1.8rem", fontWeight: 600, color: BROWN, lineHeight: 1 }}>{value}</div>
+                  <div className="text-xs mt-1" style={{ color: BROWN_MID, fontFamily: SANS, fontWeight: 300 }}>{sub}</div>
                 </div>
               ))}
             </div>
 
-            {/* Streak + Insights row */}
+            {/* Secondary stats row */}
             {(streak > 0 || categoryBreakdown.length > 0 || (patternInsights.length > 0 && patternInsights[0] !== "Make more decisions to unlock pattern insights.")) && (
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-3">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 {streak > 0 && (
-                  <div className="rounded-2xl p-5"
-                    style={{ background: streak >= 3 ? "#fdf3ec" : "white", border: streak >= 3 ? `1px solid ${TERRA}30` : "1px solid rgba(61,90,71,0.09)" }}>
-                    <div className="flex items-center gap-2 mb-1">
-                      <Flame className="w-4 h-4" style={{ color: streak >= 3 ? TERRA : "rgba(61,90,71,0.4)" }} />
-                      <span className="text-xs font-medium uppercase tracking-widest" style={{ color: "rgba(61,90,71,0.4)" }}>Streak</span>
+                  <div className="rounded-xl p-4"
+                    style={{ background: streak >= 3 ? "#fdf3ec" : "white", border: streak >= 3 ? "1px solid rgba(176,90,58,0.15)" : `1px solid ${BORDER}` }}>
+                    <div className="flex items-center gap-2 mb-2">
+                      <Flame className="w-3.5 h-3.5" style={{ color: streak >= 3 ? "#b05a3a" : BROWN_MID }} />
+                      <span className="text-[10px] font-semibold uppercase tracking-[0.1em]" style={{ color: "rgba(45,37,32,0.35)", fontFamily: SANS }}>Streak</span>
                     </div>
-                    <div className="font-serif text-3xl font-bold" style={{ color: streak >= 3 ? TERRA : GREEN_DARK }}>
-                      {streak}
-                    </div>
-                    <div className="text-xs mt-1" style={{ color: "rgba(61,90,71,0.45)" }}>
-                      day{streak !== 1 ? "s" : ""} in a row
-                    </div>
+                    <div style={{ fontFamily: SERIF, fontSize: "1.8rem", fontWeight: 600, color: streak >= 3 ? "#b05a3a" : BROWN, lineHeight: 1 }}>{streak}</div>
+                    <div className="text-xs mt-1" style={{ color: BROWN_MID, fontFamily: SANS, fontWeight: 300 }}>day{streak !== 1 ? "s" : ""} in a row</div>
                   </div>
                 )}
-
                 {categoryBreakdown.length > 0 && (
-                  <div className="rounded-2xl bg-white p-5" style={{ border: "1px solid rgba(61,90,71,0.09)" }}>
-                    <p className="text-xs font-medium uppercase tracking-widest mb-3" style={{ color: "rgba(61,90,71,0.4)" }}>
-                      By category
-                    </p>
+                  <div className="rounded-xl bg-white p-4" style={{ border: `1px solid ${BORDER}` }}>
+                    <span className="text-[10px] font-semibold uppercase tracking-[0.1em] block mb-3" style={{ color: "rgba(45,37,32,0.35)", fontFamily: SANS }}>By category</span>
                     <div className="flex flex-wrap gap-1.5">
                       {categoryBreakdown.map((c) => (
-                        <span key={c.label} className="px-2.5 py-1 rounded-full text-xs font-medium"
-                          style={{ background: "rgba(61,90,71,0.07)", color: GREEN }}>
+                        <span key={c.label} className="px-2 py-0.5 rounded-full text-xs"
+                          style={{ background: "rgba(45,37,32,0.05)", color: BROWN_MID, fontFamily: SANS }}>
                           {c.label} · {c.count}
                         </span>
                       ))}
                     </div>
                   </div>
                 )}
-
                 {patternInsights.length > 0 && patternInsights[0] !== "Make more decisions to unlock pattern insights." && (
-                  <div className="rounded-2xl p-5" style={{ background: "#fdf8ef", border: `1px solid ${TERRA}25` }}>
+                  <div className="rounded-xl p-4" style={{ background: "#fdf8ef", border: "1px solid rgba(201,149,107,0.2)" }}>
                     <div className="flex items-center gap-1.5 mb-2">
-                      <Lightbulb className="w-4 h-4" style={{ color: TERRA }} />
-                      <span className="text-xs font-medium uppercase tracking-widest" style={{ color: "rgba(176,90,58,0.6)" }}>Pattern insight</span>
+                      <Lightbulb className="w-3.5 h-3.5" style={{ color: SAND }} />
+                      <span className="text-[10px] font-semibold uppercase tracking-[0.1em]" style={{ color: SAND, fontFamily: SANS }}>Pattern</span>
                     </div>
-                    <p className="text-sm leading-relaxed" style={{ color: "rgba(61,90,71,0.7)" }}>{patternInsights[0]}</p>
+                    <p className="text-sm leading-relaxed" style={{ color: BROWN_MID, fontFamily: SANS, fontWeight: 300 }}>{patternInsights[0]}</p>
                   </div>
                 )}
               </div>
             )}
-          </div>
+          </section>
         )}
 
         {/* History */}
-        <div>
+        <section>
           <div className="flex items-center justify-between mb-5">
-            <p className="text-xs font-semibold uppercase tracking-widest" style={{ color: "rgba(61,90,71,0.4)" }}>
-              Decision history
-            </p>
+            <div className="flex items-center gap-2.5">
+              <div className="w-5 h-px" style={{ background: SAND }} />
+              <span className="text-[10px] font-semibold uppercase tracking-[0.12em]" style={{ color: SAND, fontFamily: SANS }}>History</span>
+            </div>
             <div className="flex items-center gap-2">
-              <div className="relative w-44">
-                <Search className="absolute left-3 top-2.5 h-3.5 w-3.5" style={{ color: "rgba(61,90,71,0.35)" }} />
+              <div className="relative w-40">
+                <Search className="absolute left-3 top-2.5 h-3.5 w-3.5" style={{ color: "rgba(45,37,32,0.3)" }} />
                 <Input placeholder="Search…"
                   className="pl-8 text-sm h-9 rounded-xl border-0"
-                  style={{ background: "white", color: GREEN_DARK }}
+                  style={{ background: "white", color: BROWN, fontFamily: SANS, border: `1px solid ${BORDER}` }}
                   value={search} onChange={(e) => setSearch(e.target.value)} />
               </div>
               <Select value={priority} onValueChange={(v) => setPriority(v === "all" ? undefined : v)}>
-                <SelectTrigger className="w-[100px] text-sm h-9 rounded-xl border-0"
-                  style={{ background: "white", color: GREEN }}>
-                  <SelectValue placeholder="Filter" />
+                <SelectTrigger className="w-[90px] text-xs h-9 rounded-xl border-0"
+                  style={{ background: "white", color: BROWN_MID, fontFamily: SANS, border: `1px solid ${BORDER}` }}>
+                  <SelectValue placeholder="All" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All</SelectItem>
@@ -277,91 +264,86 @@ export default function Decisions() {
             {isLoading ? (
               [1, 2, 3].map(i => <Skeleton key={i} className="h-36 w-full rounded-2xl" />)
             ) : decisions?.length === 0 ? (
-              <div className="text-center py-16 rounded-2xl border border-dashed"
-                style={{ borderColor: "rgba(61,90,71,0.2)" }}>
-                <p className="text-sm" style={{ color: "rgba(61,90,71,0.45)" }}>No decisions yet. Make one!</p>
+              <div className="text-center py-16 rounded-2xl" style={{ border: `1px dashed rgba(45,37,32,0.15)` }}>
+                <p className="text-sm" style={{ color: BROWN_MID, fontFamily: SANS, fontWeight: 300 }}>No decisions yet — go make one.</p>
               </div>
             ) : (
               decisions?.map((decision) => {
                 const isFresh = freshDecision?.id === decision.id;
                 const CategoryIcon = decision.category ? CATEGORY_ICONS[decision.category] ?? Zap : null;
-                const outcomeColors = {
-                  great: { label: "Great outcome", color: "#4a7c59" },
+                const outcomeMap = {
+                  great: { label: "Great outcome", color: "#5c8c6e" },
                   okay: { label: "Okay", color: "#c4852a" },
-                  regret: { label: "Regret", color: TERRA },
+                  regret: { label: "I regret it", color: "#b05a3a" },
                 };
 
                 return (
                   <div key={decision.id}
-                    className="rounded-2xl bg-white overflow-hidden transition-all hover:shadow-sm"
-                    style={{
-                      border: isFresh ? `1.5px solid ${GREEN}` : "1px solid rgba(61,90,71,0.1)",
-                    }}>
+                    className="rounded-2xl bg-white overflow-hidden transition-shadow hover:shadow-sm"
+                    style={{ border: isFresh ? `1.5px solid ${SAND}` : `1px solid ${BORDER}` }}
+                  >
                     <div className="flex">
-                      {/* Left accent */}
-                      <div className="w-1 flex-shrink-0"
-                        style={{ background: isFresh ? `linear-gradient(180deg, ${GREEN} 0%, ${TERRA} 100%)` : "rgba(61,90,71,0.08)" }} />
+                      {/* Left accent bar */}
+                      <div className="w-0.5 flex-shrink-0 rounded-l-2xl"
+                        style={{ background: isFresh ? SAND : "transparent" }} />
 
                       <div className="flex-1 p-5">
-                        {/* Meta */}
-                        <div className="flex items-start justify-between gap-2 mb-2">
+                        {/* Meta row */}
+                        <div className="flex items-center justify-between gap-2 mb-3 flex-wrap">
                           <div className="flex items-center gap-2 flex-wrap">
-                            <span className="text-xs" style={{ color: "rgba(61,90,71,0.4)" }}>
+                            <span className="text-xs" style={{ color: "rgba(45,37,32,0.35)", fontFamily: SANS }}>
                               {format(new Date(decision.createdAt), "MMM d, yyyy · h:mm a")}
                             </span>
                             {CategoryIcon && decision.category && (
-                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium"
-                                style={{ background: "rgba(61,90,71,0.07)", color: GREEN }}>
+                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs"
+                                style={{ background: "rgba(45,37,32,0.05)", color: BROWN_MID, fontFamily: SANS }}>
                                 <CategoryIcon className="w-3 h-3" /> {decision.category}
                               </span>
                             )}
                             {decision.aiUsed && (
-                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium"
-                                style={{ background: "rgba(176,90,58,0.08)", color: TERRA, border: `1px solid ${TERRA}25` }}>
+                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs"
+                                style={{ background: "rgba(201,149,107,0.1)", color: SAND, border: `1px solid rgba(201,149,107,0.2)`, fontFamily: SANS }}>
                                 <Sparkles className="w-3 h-3" /> AI
                               </span>
                             )}
                             {isFresh && (
-                              <span className="px-2 py-0.5 rounded-full text-xs font-semibold"
-                                style={{ background: `${GREEN}15`, color: GREEN }}>just decided</span>
+                              <span className="px-2 py-0.5 rounded-full text-xs"
+                                style={{ background: `${SAND}18`, color: SAND, fontFamily: SANS }}>
+                                just decided
+                              </span>
                             )}
                           </div>
-
-                          {/* Outcome badge */}
-                          {decision.outcome && outcomeColors[decision.outcome as keyof typeof outcomeColors] && (
-                            <span className="px-2.5 py-1 rounded-full text-xs font-medium shrink-0"
-                              style={{ color: outcomeColors[decision.outcome as keyof typeof outcomeColors].color, background: outcomeColors[decision.outcome as keyof typeof outcomeColors].color + "15", border: `1px solid ${outcomeColors[decision.outcome as keyof typeof outcomeColors].color}30` }}>
-                              {outcomeColors[decision.outcome as keyof typeof outcomeColors].label}
+                          {decision.outcome && outcomeMap[decision.outcome as keyof typeof outcomeMap] && (
+                            <span className="px-2.5 py-0.5 rounded-full text-xs font-medium"
+                              style={{ color: outcomeMap[decision.outcome as keyof typeof outcomeMap].color, background: outcomeMap[decision.outcome as keyof typeof outcomeMap].color + "12", border: `1px solid ${outcomeMap[decision.outcome as keyof typeof outcomeMap].color}28`, fontFamily: SANS }}>
+                              {outcomeMap[decision.outcome as keyof typeof outcomeMap].label}
                             </span>
                           )}
                         </div>
 
-                        {/* Problem */}
-                        <p className="text-sm italic mb-1.5 leading-relaxed" style={{ color: "rgba(61,90,71,0.5)" }}>
+                        <p className="text-sm italic mb-1.5 leading-relaxed" style={{ color: BROWN_MID, fontFamily: SERIF }}>
                           "{decision.problem}"
                         </p>
 
-                        {/* Decision */}
-                        <p className="font-serif font-semibold text-base mb-3" style={{ color: GREEN_DARK }}>
+                        <p className="font-semibold mb-3" style={{ fontFamily: SERIF, fontSize: "1.1rem", color: BROWN, lineHeight: 1.35 }}>
                           {decision.finalDecision}
                         </p>
 
                         <ConfidenceBar value={decision.confidence} />
 
                         {/* Outcome + Delete */}
-                        <div className="flex items-center justify-between mt-4 pt-3" style={{ borderTop: "1px solid rgba(61,90,71,0.07)" }}>
+                        <div className="flex items-center justify-between mt-4 pt-3" style={{ borderTop: `1px solid ${BORDER}` }}>
                           {!decision.outcome ? (
                             <div className="flex gap-2 flex-wrap">
-                              <OutcomeButton label="Great" icon={ThumbsUp} color="#4a7c59" onClick={() => handleOutcome(decision.id, "great")} />
-                              <OutcomeButton label="Okay" icon={Minus} color="#c4852a" onClick={() => handleOutcome(decision.id, "okay")} />
-                              <OutcomeButton label="Regret" icon={ThumbsDown} color={TERRA} onClick={() => handleOutcome(decision.id, "regret")} />
+                              <OutcomeBtn label="Great" icon={ThumbsUp} color="#5c8c6e" onClick={() => handleOutcome(decision.id, "great")} />
+                              <OutcomeBtn label="Okay" icon={Minus} color="#c4852a" onClick={() => handleOutcome(decision.id, "okay")} />
+                              <OutcomeBtn label="Regret" icon={ThumbsDown} color="#b05a3a" onClick={() => handleOutcome(decision.id, "regret")} />
                             </div>
                           ) : <div />}
 
                           <AlertDialog>
                             <AlertDialogTrigger asChild>
-                              <button className="text-xs flex items-center gap-1 transition-opacity hover:opacity-60"
-                                style={{ color: "rgba(61,90,71,0.3)" }}>
+                              <button className="transition-opacity hover:opacity-50" style={{ color: "rgba(45,37,32,0.25)" }}>
                                 <Trash2 className="w-3.5 h-3.5" />
                               </button>
                             </AlertDialogTrigger>
@@ -384,7 +366,8 @@ export default function Decisions() {
               })
             )}
           </div>
-        </div>
+        </section>
+
       </main>
     </div>
   );
