@@ -1,6 +1,10 @@
+node_modules
 .replit
-.replitignore
 replit.md
-attached_assets/
-scripts/
+attached_assets
+scripts
 *.sh
+artifacts/api-server/src
+lib/*/src
+lib/api-zod/src
+lib/db/src
