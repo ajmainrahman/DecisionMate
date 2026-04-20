@@ -3,8 +3,6 @@ import { useListDecisions, getListDecisionsQueryKey, useGetDecisionDashboard, ge
 import { useQueryClient } from "@tanstack/react-query";
 import { useThinkoraContext } from "@/App";
 import { ThinkoraLogo, ThinkoraWordmark } from "@/components/thinkora-logo";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -13,9 +11,9 @@ import { format } from "date-fns";
 import { useState, useRef } from "react";
 import { useDebounce } from "@/hooks/use-debounce";
 import {
-  ArrowLeft, Plus, BrainCircuit, Sparkles, CheckCircle2, History,
-  TrendingUp, Flame, ThumbsUp, Minus, ThumbsDown, Search, Filter,
-  Briefcase, Heart, DollarSign, Users, Star, Zap, Trash2, Tag, Lightbulb,
+  Plus, Sparkles, Flame, ThumbsUp, Minus, ThumbsDown, Search,
+  Briefcase, Heart, DollarSign, Users, Star, Zap, Trash2,
+  CheckCircle2, BrainCircuit, TrendingUp, BarChart3, Lightbulb,
 } from "lucide-react";
 
 const CATEGORY_ICONS: Record<string, any> = {
@@ -23,15 +21,30 @@ const CATEGORY_ICONS: Record<string, any> = {
   relationships: Users, personal: Star, other: Zap,
 };
 
+const GREEN = "#3d5a47";
+const GREEN_DARK = "#2b3f32";
+const CREAM = "#f5f0e8";
+const TERRA = "#b05a3a";
+
 function ConfidenceBar({ value }: { value: number }) {
-  const color = value >= 80 ? "#22c55e" : value >= 60 ? "#eab308" : "#ef4444";
+  const color = value >= 80 ? "#4a7c59" : value >= 60 ? "#c4852a" : "#b05a3a";
   return (
     <div className="flex items-center gap-2">
-      <div className="flex-1 h-1.5 rounded-full bg-border/40 overflow-hidden">
-        <div className="h-full rounded-full transition-all" style={{ width: `${value}%`, background: color }} />
+      <div className="flex-1 h-1 rounded-full overflow-hidden" style={{ background: "rgba(61,90,71,0.12)" }}>
+        <div className="h-full rounded-full" style={{ width: `${value}%`, background: color }} />
       </div>
-      <span className="text-xs font-semibold" style={{ color }}>{value}%</span>
+      <span className="text-xs font-semibold tabular-nums" style={{ color }}>{value}%</span>
     </div>
+  );
+}
+
+function OutcomeButton({ label, icon: Icon, color, onClick }: { label: string; icon: any; color: string; onClick: () => void }) {
+  return (
+    <button onClick={onClick}
+      className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium border transition-all hover:opacity-80"
+      style={{ color, borderColor: color + "40", background: color + "0d" }}>
+      <Icon className="w-3.5 h-3.5" /> {label}
+    </button>
   );
 }
 
@@ -57,7 +70,7 @@ export default function Decisions() {
   updateRef.current = updateOutcome.mutate;
 
   const s = stats as any;
-  const streak = s?.streak ?? 0;
+  const streak: number = s?.streak ?? 0;
   const patternInsights: string[] = s?.patternInsights ?? [];
   const categoryBreakdown: { label: string; count: number }[] = s?.categoryBreakdown ?? [];
 
@@ -81,199 +94,173 @@ export default function Decisions() {
   };
 
   return (
-    <div
-      className="min-h-[100dvh]"
-      style={{ background: "linear-gradient(145deg, hsl(252 60% 97%) 0%, hsl(280 50% 95%) 50%, hsl(300 45% 95%) 100%)" }}
-    >
-      {/* Ambient orbs */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden -z-10">
-        <div className="absolute top-0 right-1/4 w-[400px] h-[400px] rounded-full opacity-20"
-          style={{ background: "radial-gradient(circle, hsl(263 72% 60%) 0%, transparent 65%)", filter: "blur(80px)" }} />
-        <div className="absolute bottom-0 left-1/4 w-[350px] h-[350px] rounded-full opacity-15"
-          style={{ background: "radial-gradient(circle, hsl(300 60% 62%) 0%, transparent 65%)", filter: "blur(80px)" }} />
-      </div>
+    <div className="min-h-[100dvh]" style={{ background: CREAM }}>
 
       {/* Header */}
-      <header className="sticky top-0 z-10 border-b border-white/50"
-        style={{ background: "rgba(248, 246, 255, 0.85)", backdropFilter: "blur(16px)" }}>
-        <div className="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <button onClick={() => navigate("/")}
-              className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-primary transition-colors">
-              <ArrowLeft className="w-4 h-4" />
-            </button>
-            <div className="flex items-center gap-2">
-              <ThinkoraLogo size={28} />
-              <ThinkoraWordmark />
-            </div>
-          </div>
-          <Button
+      <header className="sticky top-0 z-10 border-b" style={{ background: CREAM, borderColor: "rgba(61,90,71,0.1)" }}>
+        <div className="max-w-4xl mx-auto px-6 h-16 flex items-center justify-between">
+          <button onClick={() => navigate("/")} className="flex items-center gap-2.5 hover:opacity-75 transition-opacity">
+            <ThinkoraLogo size={30} />
+            <ThinkoraWordmark />
+          </button>
+          <button
             onClick={() => { setFreshDecision(null); navigate("/"); }}
-            className="rounded-full border-0 text-white text-sm font-medium px-5"
-            style={{ background: "linear-gradient(135deg, hsl(263 72% 52%) 0%, hsl(300 60% 58%) 100%)" }}
+            className="flex items-center gap-1.5 text-sm font-medium px-4 py-2 rounded-full transition-all hover:opacity-80"
+            style={{ background: GREEN, color: CREAM }}
           >
-            <Plus className="w-4 h-4 mr-1.5" /> New Decision
-          </Button>
+            <Plus className="w-4 h-4" /> New decision
+          </button>
         </div>
       </header>
 
-      <main className="max-w-5xl mx-auto px-4 py-8 flex flex-col gap-8">
+      <main className="max-w-4xl mx-auto px-6 py-10 flex flex-col gap-10">
 
-        {/* Fresh Result Hero */}
+        {/* Fresh Result */}
         {freshDecision && (
-          <div className="rounded-3xl overflow-hidden shadow-2xl"
-            style={{ background: "rgba(255,255,255,0.9)", backdropFilter: "blur(20px)", border: "1px solid rgba(255,255,255,0.95)" }}>
-            {/* Top gradient bar */}
-            <div className="h-1.5 w-full"
-              style={{ background: "linear-gradient(90deg, hsl(263 72% 52%) 0%, hsl(300 60% 58%) 100%)" }} />
-
-            <div className="p-7">
-              {/* Label */}
-              <div className="flex items-center justify-between mb-4">
-                <span className="inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full"
-                  style={{ background: "linear-gradient(135deg, hsl(263 72% 52% / 0.1) 0%, hsl(300 60% 58% / 0.1) 100%)", color: "hsl(263 72% 45%)", border: "1px solid hsl(263 72% 52% / 0.2)" }}>
-                  {freshDecision.aiUsed && <Sparkles className="w-3.5 h-3.5" />}
-                  Your Recommendation
-                </span>
-                <button onClick={() => setFreshDecision(null)} className="text-xs text-muted-foreground hover:text-foreground transition-colors">
-                  Dismiss
-                </button>
+          <div>
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full" style={{ background: TERRA }} />
+                <p className="text-xs font-semibold uppercase tracking-widest" style={{ color: "rgba(61,90,71,0.45)" }}>
+                  {freshDecision.aiUsed ? "AI-Enhanced" : "Rule-Based"} Recommendation
+                </p>
               </div>
+              <button onClick={() => setFreshDecision(null)}
+                className="text-xs transition-opacity hover:opacity-60"
+                style={{ color: "rgba(61,90,71,0.4)" }}>
+                dismiss
+              </button>
+            </div>
 
-              {/* Problem */}
-              <p className="text-sm text-muted-foreground mb-4 leading-relaxed italic">"{freshDecision.problem}"</p>
+            <div className="rounded-2xl bg-white overflow-hidden shadow-sm"
+              style={{ border: "1px solid rgba(61,90,71,0.1)" }}>
+              {/* Top accent line */}
+              <div className="h-1" style={{ background: `linear-gradient(90deg, ${GREEN} 0%, ${TERRA} 100%)` }} />
 
-              {/* Decision */}
-              <h2 className="text-2xl sm:text-3xl font-serif font-bold mb-3 leading-tight"
-                style={{
-                  background: "linear-gradient(135deg, hsl(252 25% 14%) 0%, hsl(263 72% 35%) 100%)",
-                  WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text"
-                }}>
-                {freshDecision.finalDecision}
-              </h2>
+              <div className="p-7">
+                <p className="text-sm italic mb-4 leading-relaxed" style={{ color: "rgba(61,90,71,0.5)" }}>
+                  "{freshDecision.problem}"
+                </p>
 
-              {/* Explanation */}
-              <p className="text-muted-foreground text-base leading-relaxed mb-5">{freshDecision.explanation}</p>
+                <h2 className="font-serif text-3xl font-bold leading-tight mb-3" style={{ color: GREEN_DARK }}>
+                  {freshDecision.finalDecision}
+                </h2>
 
-              {/* Confidence */}
-              <div className="mb-5">
-                <div className="flex items-center justify-between mb-1.5">
-                  <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Confidence</span>
-                  <span className="text-xs font-semibold text-muted-foreground">{freshDecision.confidence}%</span>
+                <p className="text-base leading-relaxed mb-6" style={{ color: "rgba(61,90,71,0.7)" }}>
+                  {freshDecision.explanation}
+                </p>
+
+                <div className="flex items-center gap-3 mb-6">
+                  <span className="text-xs font-semibold uppercase tracking-widest" style={{ color: "rgba(61,90,71,0.4)" }}>Confidence</span>
+                  <div className="flex-1"><ConfidenceBar value={freshDecision.confidence} /></div>
                 </div>
-                <ConfidenceBar value={freshDecision.confidence} />
-              </div>
 
-              {/* Outcome question */}
-              <div className="pt-4 border-t border-border/30">
-                <p className="text-xs text-muted-foreground font-medium mb-3 uppercase tracking-wide">Once you decide — how did it go?</p>
-                <div className="flex gap-2 flex-wrap">
-                  {(["great", "okay", "regret"] as const).map((outcome) => {
-                    const config = {
-                      great: { icon: ThumbsUp, label: "Great!", color: "text-green-700 border-green-200 hover:bg-green-50" },
-                      okay: { icon: Minus, label: "Okay", color: "text-yellow-700 border-yellow-200 hover:bg-yellow-50" },
-                      regret: { icon: ThumbsDown, label: "Regret", color: "text-red-700 border-red-200 hover:bg-red-50" },
-                    };
-                    const { icon: Icon, label, color } = config[outcome];
-                    return (
-                      <Button key={outcome} variant="outline" size="sm"
-                        className={`rounded-full text-xs font-medium ${color}`}
-                        onClick={() => handleOutcome(freshDecision.id, outcome)}>
-                        <Icon className="w-3.5 h-3.5 mr-1.5" />{label}
-                      </Button>
-                    );
-                  })}
+                <div className="pt-5" style={{ borderTop: "1px solid rgba(61,90,71,0.08)" }}>
+                  <p className="text-xs font-medium mb-3 uppercase tracking-widest" style={{ color: "rgba(61,90,71,0.4)" }}>
+                    How did it turn out?
+                  </p>
+                  <div className="flex gap-2 flex-wrap">
+                    <OutcomeButton label="Great outcome" icon={ThumbsUp} color="#4a7c59" onClick={() => handleOutcome(freshDecision.id, "great")} />
+                    <OutcomeButton label="It was okay" icon={Minus} color="#c4852a" onClick={() => handleOutcome(freshDecision.id, "okay")} />
+                    <OutcomeButton label="I regret it" icon={ThumbsDown} color={TERRA} onClick={() => handleOutcome(freshDecision.id, "regret")} />
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         )}
 
-        {/* Stats row */}
+        {/* Stats Row */}
         {stats && (
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            {[
-              { label: "Today", value: stats.todayCount, sub: "decisions", icon: CheckCircle2 },
-              { label: "Total", value: stats.totalCount, sub: "all time", icon: History },
-              { label: "AI Used", value: stats.aiEnhancedCount, sub: "enhanced", icon: BrainCircuit },
-              { label: "Confidence", value: `${stats.averageConfidence}%`, sub: "average", icon: TrendingUp },
-            ].map(({ label, value, sub, icon: Icon }) => (
-              <div key={label} className="rounded-2xl p-4 transition-all hover:shadow-md"
-                style={{ background: "rgba(255,255,255,0.75)", backdropFilter: "blur(12px)", border: "1px solid rgba(255,255,255,0.85)" }}>
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-xs text-muted-foreground font-medium uppercase tracking-wide">{label}</span>
-                  <div className="w-6 h-6 rounded-lg flex items-center justify-center"
-                    style={{ background: "hsl(263 72% 52% / 0.1)" }}>
-                    <Icon className="w-3.5 h-3.5" style={{ color: "hsl(263 72% 52%)" }} />
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-widest mb-4" style={{ color: "rgba(61,90,71,0.4)" }}>
+              Overview
+            </p>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              {[
+                { label: "Today", value: stats.todayCount, sub: "decisions", icon: CheckCircle2 },
+                { label: "Total", value: stats.totalCount, sub: "all time", icon: BarChart3 },
+                { label: "AI Used", value: stats.aiEnhancedCount, sub: "enhanced", icon: BrainCircuit },
+                { label: "Confidence", value: `${stats.averageConfidence}%`, sub: "average", icon: TrendingUp },
+              ].map(({ label, value, sub, icon: Icon }) => (
+                <div key={label} className="rounded-2xl bg-white p-5"
+                  style={{ border: "1px solid rgba(61,90,71,0.09)" }}>
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-xs font-medium uppercase tracking-widest" style={{ color: "rgba(61,90,71,0.4)" }}>{label}</span>
+                    <Icon className="w-4 h-4" style={{ color: "rgba(61,90,71,0.3)" }} />
                   </div>
+                  <div className="font-serif text-3xl font-bold" style={{ color: GREEN_DARK }}>{value}</div>
+                  <div className="text-xs mt-1" style={{ color: "rgba(61,90,71,0.45)" }}>{sub}</div>
                 </div>
-                <div className="text-2xl font-serif font-bold">{value}</div>
-                <div className="text-xs text-muted-foreground mt-0.5">{sub}</div>
+              ))}
+            </div>
+
+            {/* Streak + Insights row */}
+            {(streak > 0 || categoryBreakdown.length > 0 || (patternInsights.length > 0 && patternInsights[0] !== "Make more decisions to unlock pattern insights.")) && (
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-3">
+                {streak > 0 && (
+                  <div className="rounded-2xl p-5"
+                    style={{ background: streak >= 3 ? "#fdf3ec" : "white", border: streak >= 3 ? `1px solid ${TERRA}30` : "1px solid rgba(61,90,71,0.09)" }}>
+                    <div className="flex items-center gap-2 mb-1">
+                      <Flame className="w-4 h-4" style={{ color: streak >= 3 ? TERRA : "rgba(61,90,71,0.4)" }} />
+                      <span className="text-xs font-medium uppercase tracking-widest" style={{ color: "rgba(61,90,71,0.4)" }}>Streak</span>
+                    </div>
+                    <div className="font-serif text-3xl font-bold" style={{ color: streak >= 3 ? TERRA : GREEN_DARK }}>
+                      {streak}
+                    </div>
+                    <div className="text-xs mt-1" style={{ color: "rgba(61,90,71,0.45)" }}>
+                      day{streak !== 1 ? "s" : ""} in a row
+                    </div>
+                  </div>
+                )}
+
+                {categoryBreakdown.length > 0 && (
+                  <div className="rounded-2xl bg-white p-5" style={{ border: "1px solid rgba(61,90,71,0.09)" }}>
+                    <p className="text-xs font-medium uppercase tracking-widest mb-3" style={{ color: "rgba(61,90,71,0.4)" }}>
+                      By category
+                    </p>
+                    <div className="flex flex-wrap gap-1.5">
+                      {categoryBreakdown.map((c) => (
+                        <span key={c.label} className="px-2.5 py-1 rounded-full text-xs font-medium"
+                          style={{ background: "rgba(61,90,71,0.07)", color: GREEN }}>
+                          {c.label} · {c.count}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {patternInsights.length > 0 && patternInsights[0] !== "Make more decisions to unlock pattern insights." && (
+                  <div className="rounded-2xl p-5" style={{ background: "#fdf8ef", border: `1px solid ${TERRA}25` }}>
+                    <div className="flex items-center gap-1.5 mb-2">
+                      <Lightbulb className="w-4 h-4" style={{ color: TERRA }} />
+                      <span className="text-xs font-medium uppercase tracking-widest" style={{ color: "rgba(176,90,58,0.6)" }}>Pattern insight</span>
+                    </div>
+                    <p className="text-sm leading-relaxed" style={{ color: "rgba(61,90,71,0.7)" }}>{patternInsights[0]}</p>
+                  </div>
+                )}
               </div>
-            ))}
+            )}
           </div>
         )}
 
-        {/* Streak + category + insights */}
-        {stats && (
-          <div className="flex flex-col sm:flex-row gap-4">
-            {streak > 0 && (
-              <div className="rounded-2xl p-4 flex items-center gap-3"
-                style={{ background: streak >= 3 ? "linear-gradient(135deg, #fff7ed, #fef3c7)" : "rgba(255,255,255,0.75)", backdropFilter: "blur(12px)", border: streak >= 3 ? "1px solid #fed7aa" : "1px solid rgba(255,255,255,0.85)" }}>
-                <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${streak >= 3 ? "bg-orange-100" : "bg-primary/10"}`}>
-                  <Flame className={`w-5 h-5 ${streak >= 3 ? "text-orange-500" : "text-primary"}`} />
-                </div>
-                <div>
-                  <div className={`text-xl font-serif font-bold ${streak >= 3 ? "text-orange-600" : ""}`}>{streak} day{streak !== 1 ? "s" : ""}</div>
-                  <div className="text-xs text-muted-foreground">streak</div>
-                </div>
-              </div>
-            )}
-
-            {categoryBreakdown.length > 0 && (
-              <div className="flex-1 rounded-2xl p-4"
-                style={{ background: "rgba(255,255,255,0.75)", backdropFilter: "blur(12px)", border: "1px solid rgba(255,255,255,0.85)" }}>
-                <div className="flex items-center gap-1.5 text-xs text-muted-foreground font-medium uppercase tracking-wide mb-3">
-                  <Tag className="w-3.5 h-3.5" /> Categories
-                </div>
-                <div className="flex flex-wrap gap-1.5">
-                  {categoryBreakdown.map((c) => (
-                    <span key={c.label} className="px-2.5 py-1 rounded-full text-xs font-medium"
-                      style={{ background: "hsl(263 72% 52% / 0.08)", color: "hsl(263 72% 40%)", border: "1px solid hsl(263 72% 52% / 0.15)" }}>
-                      {c.label} · {c.count}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {patternInsights.length > 0 && patternInsights[0] !== "Make more decisions to unlock pattern insights." && (
-              <div className="flex-1 rounded-2xl p-4"
-                style={{ background: "linear-gradient(135deg, hsl(263 72% 52% / 0.05) 0%, hsl(300 60% 62% / 0.05) 100%)", border: "1px solid hsl(263 72% 52% / 0.15)" }}>
-                <div className="flex items-center gap-1.5 text-xs font-medium mb-3" style={{ color: "hsl(263 72% 45%)" }}>
-                  <Lightbulb className="w-3.5 h-3.5" style={{ color: "hsl(300 60% 55%)" }} /> Insight
-                </div>
-                <p className="text-sm leading-relaxed" style={{ color: "hsl(263 25% 35%)" }}>{patternInsights[0]}</p>
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* Decision History */}
+        {/* History */}
         <div>
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-5">
-            <h3 className="text-lg font-serif font-semibold flex items-center gap-2">
-              <History className="w-5 h-5" style={{ color: "hsl(263 72% 52%)" }} /> All Decisions
-            </h3>
-            <div className="flex items-center gap-2 w-full sm:w-auto">
-              <div className="relative flex-1 sm:w-56">
-                <Search className="absolute left-3 top-2.5 h-3.5 w-3.5 text-muted-foreground" />
-                <Input placeholder="Search…" className="pl-8 bg-white/70 border-border/40 rounded-xl text-sm h-9"
+          <div className="flex items-center justify-between mb-5">
+            <p className="text-xs font-semibold uppercase tracking-widest" style={{ color: "rgba(61,90,71,0.4)" }}>
+              Decision history
+            </p>
+            <div className="flex items-center gap-2">
+              <div className="relative w-44">
+                <Search className="absolute left-3 top-2.5 h-3.5 w-3.5" style={{ color: "rgba(61,90,71,0.35)" }} />
+                <Input placeholder="Search…"
+                  className="pl-8 text-sm h-9 rounded-xl border-0"
+                  style={{ background: "white", color: GREEN_DARK }}
                   value={search} onChange={(e) => setSearch(e.target.value)} />
               </div>
               <Select value={priority} onValueChange={(v) => setPriority(v === "all" ? undefined : v)}>
-                <SelectTrigger className="w-[110px] bg-white/70 border-border/40 rounded-xl text-sm h-9">
-                  <Filter className="w-3.5 h-3.5 mr-1 text-muted-foreground" />
+                <SelectTrigger className="w-[100px] text-sm h-9 rounded-xl border-0"
+                  style={{ background: "white", color: GREEN }}>
                   <SelectValue placeholder="Filter" />
                 </SelectTrigger>
                 <SelectContent>
@@ -288,102 +275,95 @@ export default function Decisions() {
 
           <div className="flex flex-col gap-3">
             {isLoading ? (
-              [1, 2, 3].map(i => <Skeleton key={i} className="h-40 w-full rounded-2xl" />)
+              [1, 2, 3].map(i => <Skeleton key={i} className="h-36 w-full rounded-2xl" />)
             ) : decisions?.length === 0 ? (
               <div className="text-center py-16 rounded-2xl border border-dashed"
-                style={{ borderColor: "hsl(263 72% 52% / 0.2)", background: "hsl(263 72% 52% / 0.02)" }}>
-                <p className="text-muted-foreground text-sm">No decisions yet — go make one!</p>
+                style={{ borderColor: "rgba(61,90,71,0.2)" }}>
+                <p className="text-sm" style={{ color: "rgba(61,90,71,0.45)" }}>No decisions yet. Make one!</p>
               </div>
             ) : (
               decisions?.map((decision) => {
                 const isFresh = freshDecision?.id === decision.id;
                 const CategoryIcon = decision.category ? CATEGORY_ICONS[decision.category] ?? Zap : null;
-                const outcomeConfig = {
-                  great: { label: "Great outcome", color: "bg-green-50 text-green-700 border-green-200" },
-                  okay: { label: "Okay outcome", color: "bg-yellow-50 text-yellow-700 border-yellow-200" },
-                  regret: { label: "I regret this", color: "bg-red-50 text-red-700 border-red-200" },
+                const outcomeColors = {
+                  great: { label: "Great outcome", color: "#4a7c59" },
+                  okay: { label: "Okay", color: "#c4852a" },
+                  regret: { label: "Regret", color: TERRA },
                 };
 
                 return (
-                  <div key={decision.id} className={`rounded-2xl overflow-hidden transition-all ${isFresh ? "ring-2" : ""}`}
+                  <div key={decision.id}
+                    className="rounded-2xl bg-white overflow-hidden transition-all hover:shadow-sm"
                     style={{
-                      background: "rgba(255,255,255,0.82)", backdropFilter: "blur(12px)",
-                      border: "1px solid rgba(255,255,255,0.9)",
-                      ...(isFresh ? { ringColor: "hsl(263 72% 52%)" } : {})
+                      border: isFresh ? `1.5px solid ${GREEN}` : "1px solid rgba(61,90,71,0.1)",
                     }}>
                     <div className="flex">
-                      {/* Left color accent */}
-                      <div className="w-1 flex-shrink-0 rounded-l-2xl"
-                        style={{ background: isFresh ? "linear-gradient(180deg, hsl(263 72% 52%) 0%, hsl(300 60% 58%) 100%)" : "hsl(252 30% 90%)" }} />
+                      {/* Left accent */}
+                      <div className="w-1 flex-shrink-0"
+                        style={{ background: isFresh ? `linear-gradient(180deg, ${GREEN} 0%, ${TERRA} 100%)` : "rgba(61,90,71,0.08)" }} />
 
                       <div className="flex-1 p-5">
-                        {/* Meta row */}
-                        <div className="flex items-start justify-between gap-3 mb-3">
+                        {/* Meta */}
+                        <div className="flex items-start justify-between gap-2 mb-2">
                           <div className="flex items-center gap-2 flex-wrap">
-                            <span className="text-xs text-muted-foreground">
+                            <span className="text-xs" style={{ color: "rgba(61,90,71,0.4)" }}>
                               {format(new Date(decision.createdAt), "MMM d, yyyy · h:mm a")}
                             </span>
                             {CategoryIcon && decision.category && (
                               <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium"
-                                style={{ background: "hsl(263 72% 52% / 0.07)", color: "hsl(263 72% 45%)", border: "1px solid hsl(263 72% 52% / 0.15)" }}>
+                                style={{ background: "rgba(61,90,71,0.07)", color: GREEN }}>
                                 <CategoryIcon className="w-3 h-3" /> {decision.category}
                               </span>
                             )}
-                            {isFresh && (
-                              <span className="text-xs font-semibold px-2 py-0.5 rounded-full"
-                                style={{ background: "hsl(263 72% 52% / 0.1)", color: "hsl(263 72% 45%)" }}>
-                                Just decided
-                              </span>
-                            )}
-                          </div>
-                          <div className="flex items-center gap-1.5 shrink-0">
                             {decision.aiUsed && (
-                              <span className="text-xs px-2 py-0.5 rounded-full font-medium"
-                                style={{ background: "hsl(300 60% 58% / 0.1)", color: "hsl(300 60% 45%)", border: "1px solid hsl(300 60% 58% / 0.2)" }}>
-                                <Sparkles className="w-3 h-3 inline mr-0.5" /> AI
+                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium"
+                                style={{ background: "rgba(176,90,58,0.08)", color: TERRA, border: `1px solid ${TERRA}25` }}>
+                                <Sparkles className="w-3 h-3" /> AI
                               </span>
                             )}
-                            {decision.outcome && outcomeConfig[decision.outcome as keyof typeof outcomeConfig] && (
-                              <Badge className={`text-xs border ${outcomeConfig[decision.outcome as keyof typeof outcomeConfig].color}`}>
-                                {outcomeConfig[decision.outcome as keyof typeof outcomeConfig].label}
-                              </Badge>
+                            {isFresh && (
+                              <span className="px-2 py-0.5 rounded-full text-xs font-semibold"
+                                style={{ background: `${GREEN}15`, color: GREEN }}>just decided</span>
                             )}
                           </div>
+
+                          {/* Outcome badge */}
+                          {decision.outcome && outcomeColors[decision.outcome as keyof typeof outcomeColors] && (
+                            <span className="px-2.5 py-1 rounded-full text-xs font-medium shrink-0"
+                              style={{ color: outcomeColors[decision.outcome as keyof typeof outcomeColors].color, background: outcomeColors[decision.outcome as keyof typeof outcomeColors].color + "15", border: `1px solid ${outcomeColors[decision.outcome as keyof typeof outcomeColors].color}30` }}>
+                              {outcomeColors[decision.outcome as keyof typeof outcomeColors].label}
+                            </span>
+                          )}
                         </div>
 
                         {/* Problem */}
-                        <p className="text-sm text-muted-foreground mb-2 leading-relaxed">"{decision.problem}"</p>
+                        <p className="text-sm italic mb-1.5 leading-relaxed" style={{ color: "rgba(61,90,71,0.5)" }}>
+                          "{decision.problem}"
+                        </p>
 
                         {/* Decision */}
-                        <p className="font-serif font-semibold text-base text-foreground/90 mb-3">{decision.finalDecision}</p>
+                        <p className="font-serif font-semibold text-base mb-3" style={{ color: GREEN_DARK }}>
+                          {decision.finalDecision}
+                        </p>
 
-                        {/* Confidence bar */}
                         <ConfidenceBar value={decision.confidence} />
 
                         {/* Outcome + Delete */}
-                        <div className="flex items-center justify-between mt-4 pt-3 border-t border-border/20">
+                        <div className="flex items-center justify-between mt-4 pt-3" style={{ borderTop: "1px solid rgba(61,90,71,0.07)" }}>
                           {!decision.outcome ? (
-                            <div className="flex gap-1.5">
-                              {(["great", "okay", "regret"] as const).map((outcome) => {
-                                const icons = { great: ThumbsUp, okay: Minus, regret: ThumbsDown };
-                                const colors = { great: "text-green-700 border-green-200 hover:bg-green-50", okay: "text-yellow-700 border-yellow-200 hover:bg-yellow-50", regret: "text-red-700 border-red-200 hover:bg-red-50" };
-                                const Icon = icons[outcome];
-                                return (
-                                  <Button key={outcome} variant="outline" size="sm"
-                                    className={`rounded-full text-xs h-7 px-2.5 ${colors[outcome]}`}
-                                    onClick={() => handleOutcome(decision.id, outcome)}>
-                                    <Icon className="w-3 h-3 mr-1" />{outcome}
-                                  </Button>
-                                );
-                              })}
+                            <div className="flex gap-2 flex-wrap">
+                              <OutcomeButton label="Great" icon={ThumbsUp} color="#4a7c59" onClick={() => handleOutcome(decision.id, "great")} />
+                              <OutcomeButton label="Okay" icon={Minus} color="#c4852a" onClick={() => handleOutcome(decision.id, "okay")} />
+                              <OutcomeButton label="Regret" icon={ThumbsDown} color={TERRA} onClick={() => handleOutcome(decision.id, "regret")} />
                             </div>
                           ) : <div />}
 
                           <AlertDialog>
                             <AlertDialogTrigger asChild>
-                              <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-destructive h-7 px-2 rounded-full text-xs">
+                              <button className="text-xs flex items-center gap-1 transition-opacity hover:opacity-60"
+                                style={{ color: "rgba(61,90,71,0.3)" }}>
                                 <Trash2 className="w-3.5 h-3.5" />
-                              </Button>
+                              </button>
                             </AlertDialogTrigger>
                             <AlertDialogContent>
                               <AlertDialogHeader>

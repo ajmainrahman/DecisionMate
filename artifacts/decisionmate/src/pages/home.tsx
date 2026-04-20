@@ -14,7 +14,7 @@ import { ThinkoraLogo, ThinkoraWordmark } from "@/components/thinkora-logo";
 import { useThinkoraContext } from "@/App";
 import {
   Briefcase, Heart, DollarSign, Users, Star, Zap,
-  Sparkles, ArrowRight, Loader2, History, ChevronDown,
+  Sparkles, ArrowRight, Loader2, ChevronDown,
 } from "lucide-react";
 
 const CATEGORIES = [
@@ -76,159 +76,175 @@ export default function Home() {
   }
 
   return (
-    <div
-      className="min-h-[100dvh] flex flex-col"
-      style={{
-        background: "linear-gradient(145deg, hsl(252 60% 97%) 0%, hsl(280 50% 95%) 50%, hsl(300 45% 95%) 100%)",
-      }}
-    >
-      {/* Ambient orbs */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden -z-10">
-        <div className="absolute top-0 left-1/4 w-[500px] h-[500px] rounded-full opacity-30"
-          style={{ background: "radial-gradient(circle, hsl(263 72% 60%) 0%, transparent 65%)", filter: "blur(80px)" }} />
-        <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] rounded-full opacity-20"
-          style={{ background: "radial-gradient(circle, hsl(300 60% 62%) 0%, transparent 65%)", filter: "blur(80px)" }} />
-      </div>
+    <div className="min-h-[100dvh] flex flex-col lg:flex-row">
 
-      {/* Top bar */}
-      <div className="flex items-center justify-between px-6 py-5">
-        <div className="flex items-center gap-2">
-          <ThinkoraLogo size={30} />
-          <ThinkoraWordmark />
+      {/* LEFT PANEL — forest green, branding + atmosphere */}
+      <div
+        className="lg:w-[42%] flex flex-col justify-between px-10 py-10 lg:py-12 relative overflow-hidden"
+        style={{ background: "linear-gradient(160deg, #3d5a47 0%, #2b3f32 100%)" }}
+      >
+        {/* Decorative circle */}
+        <div className="absolute -top-24 -right-24 w-72 h-72 rounded-full opacity-10"
+          style={{ background: "radial-gradient(circle, #f5f0e8 0%, transparent 70%)" }} />
+        <div className="absolute -bottom-32 -left-16 w-64 h-64 rounded-full opacity-8"
+          style={{ background: "radial-gradient(circle, #f5f0e8 0%, transparent 70%)" }} />
+
+        {/* Logo row */}
+        <div className="flex items-center gap-2.5 relative z-10">
+          <ThinkoraLogo size={34} light />
+          <ThinkoraWordmark light />
         </div>
-        <button
-          onClick={() => navigate("/decisions")}
-          className="flex items-center gap-1.5 text-sm font-medium px-4 py-2 rounded-full transition-all hover:scale-[1.02]"
-          style={{ background: "rgba(124, 58, 237, 0.08)", color: "hsl(263 72% 45%)", border: "1px solid hsl(263 72% 52% / 0.2)" }}
-        >
-          <History className="w-4 h-4" />
-          History
-        </button>
+
+        {/* Hero text */}
+        <div className="relative z-10 py-8 lg:py-0">
+          <p className="text-xs font-semibold uppercase tracking-widest mb-5" style={{ color: "rgba(245,240,232,0.45)" }}>
+            AI-Assisted Clarity
+          </p>
+          <h1
+            className="font-serif text-5xl lg:text-[3.4rem] xl:text-[3.8rem] leading-[1.1] mb-6"
+            style={{ color: "#f5f0e8" }}
+          >
+            Your decision,<br />
+            <span style={{ color: "rgba(245,240,232,0.62)", fontStyle: "italic" }}>clearer.</span>
+          </h1>
+          <p className="text-base leading-relaxed max-w-xs" style={{ color: "rgba(245,240,232,0.6)" }}>
+            Describe what you're weighing. Thinkora reasons through it alongside you — practically and without judgment.
+          </p>
+        </div>
+
+        {/* Footer note */}
+        <p className="text-xs relative z-10" style={{ color: "rgba(245,240,232,0.3)" }}>
+          Powered by rule-based reasoning + Gemini AI
+        </p>
       </div>
 
-      {/* Main content — centered */}
-      <div className="flex-1 flex flex-col items-center justify-center px-4 py-8">
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="w-full max-w-2xl flex flex-col gap-6">
+      {/* RIGHT PANEL — cream, the form */}
+      <div
+        className="flex-1 flex flex-col overflow-y-auto"
+        style={{ background: "#f5f0e8" }}
+      >
+        {/* Top bar */}
+        <div className="flex items-center justify-between px-8 py-5 border-b" style={{ borderColor: "rgba(61,90,71,0.1)" }}>
+          <p className="text-sm font-medium" style={{ color: "#3d5a47" }}>What's on your mind?</p>
+          <button
+            onClick={() => navigate("/decisions")}
+            className="text-sm font-medium px-4 py-1.5 rounded-full transition-all hover:opacity-80"
+            style={{ background: "rgba(61,90,71,0.1)", color: "#3d5a47" }}
+          >
+            View history →
+          </button>
+        </div>
 
-            {/* Hero text */}
-            <div className="text-center mb-2">
-              <h1 className="text-4xl sm:text-5xl font-serif font-bold mb-3 leading-tight">
-                <span style={{
-                  background: "linear-gradient(135deg, #7c3aed 0%, #d946ef 100%)",
-                  WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text"
-                }}>What decision</span>
-                <br />
-                <span className="text-foreground/85">are you facing?</span>
-              </h1>
-              <p className="text-muted-foreground text-base">
-                Describe it honestly — Thinkora will help you see clearly.
-              </p>
-            </div>
+        {/* Scrollable form area */}
+        <div className="flex-1 flex items-start justify-center px-6 sm:px-10 py-10">
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="w-full max-w-xl flex flex-col gap-6">
 
-            {/* Main input card */}
-            <div className="rounded-3xl overflow-hidden shadow-2xl"
-              style={{ background: "rgba(255,255,255,0.88)", backdropFilter: "blur(20px)", border: "1px solid rgba(255,255,255,0.9)" }}>
-
-              {/* Textarea */}
-              <FormField control={form.control} name="problem" render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Textarea
-                      placeholder="e.g. Should I quit my job to start my own business, even though I have a family to support?"
-                      className="min-h-[160px] resize-none text-lg border-0 rounded-none bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 px-6 pt-6 pb-4 font-sans placeholder:text-muted-foreground/50"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage className="px-6 pb-2 text-sm" />
-                </FormItem>
-              )} />
-
-              {/* Divider */}
-              <div className="h-px mx-6" style={{ background: "linear-gradient(90deg, transparent, hsl(263 72% 52% / 0.15), transparent)" }} />
-
-              {/* Category row */}
-              <div className="px-6 py-4">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <span className="text-xs text-muted-foreground font-medium mr-1">Topic:</span>
-                  {CATEGORIES.map(({ value, label, icon: Icon }) => (
-                    <button key={value} type="button"
-                      onClick={() => form.setValue("category", selectedCategory === value ? undefined : value as any)}
-                      className="flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-medium transition-all border"
-                      style={selectedCategory === value ? {
-                        background: "linear-gradient(135deg, hsl(263 72% 52%) 0%, hsl(300 60% 58%) 100%)",
-                        color: "white", border: "1px solid transparent"
-                      } : {
-                        background: "transparent", color: "hsl(252 12% 50%)",
-                        border: "1px solid hsl(252 20% 88%)"
-                      }}>
-                      <Icon className="w-3 h-3" />
-                      {label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Context toggle */}
-              <div className="px-6 pb-4">
-                <button type="button" onClick={() => setShowContext(!showContext)}
-                  className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground hover:text-primary transition-colors">
-                  <ChevronDown className={`w-3.5 h-3.5 transition-transform ${showContext ? "rotate-180" : ""}`} />
-                  {showContext ? "Hide context" : "Add context for better results"}
-                </button>
-              </div>
-
-              {/* Context fields */}
-              {showContext && (
-                <div className="px-6 pb-5 grid grid-cols-2 sm:grid-cols-3 gap-3 border-t border-border/30 pt-5">
-                  {[
-                    { name: "priority" as const, label: "Priority", options: [{ v: "low", l: "Low" }, { v: "medium", l: "Medium" }, { v: "high", l: "High" }] },
-                    { name: "deadline" as const, label: "Deadline", options: [{ v: "none", l: "No deadline" }, { v: "today", l: "Today" }, { v: "this_week", l: "This week" }, { v: "later", l: "Later" }] },
-                    { name: "stressLevel" as const, label: "Stress", options: [{ v: "low", l: "Calm" }, { v: "medium", l: "A bit tense" }, { v: "high", l: "Overwhelmed" }] },
-                    { name: "energyLevel" as const, label: "Energy", options: [{ v: "low", l: "Low / Tired" }, { v: "medium", l: "Moderate" }, { v: "high", l: "High / Alert" }] },
-                    { name: "importance" as const, label: "Importance", options: [{ v: "minor", l: "Minor" }, { v: "moderate", l: "Moderate" }, { v: "major", l: "Major" }, { v: "life_changing", l: "Life-changing" }] },
-                    { name: "gutFeeling" as const, label: "Gut feeling", options: [{ v: "go_for_it", l: "Go for it" }, { v: "unsure", l: "Unsure" }, { v: "avoid_it", l: "Avoid it" }] },
-                  ].map(({ name, label, options }) => (
-                    <FormField key={name} control={form.control} name={name} render={({ field }) => (
-                      <FormItem>
-                        <Select onValueChange={field.onChange} value={field.value as string}>
-                          <FormControl>
-                            <SelectTrigger className="bg-white/70 border-border/40 text-sm h-9 rounded-xl">
-                              <SelectValue placeholder={label} />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            {options.map(({ v, l }) => <SelectItem key={v} value={v}>{l}</SelectItem>)}
-                          </SelectContent>
-                        </Select>
-                      </FormItem>
-                    )} />
-                  ))}
-
-                  <FormField control={form.control} name="sleepHours" render={({ field }) => (
-                    <FormItem className="col-span-full">
-                      <div className="text-xs text-muted-foreground mb-2">
-                        Sleep last night: <span className="font-semibold text-foreground">{field.value}h</span>
-                      </div>
+              {/* Situation card */}
+              <div className="rounded-2xl bg-white shadow-sm overflow-hidden"
+                style={{ border: "1px solid rgba(61,90,71,0.1)" }}>
+                <div className="px-5 pt-5 pb-1">
+                  <p className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: "rgba(61,90,71,0.45)" }}>
+                    The Situation
+                  </p>
+                  <FormField control={form.control} name="problem" render={({ field }) => (
+                    <FormItem>
                       <FormControl>
-                        <Slider min={0} max={12} step={0.5} defaultValue={[field.value ?? 7]}
-                          onValueChange={(v) => field.onChange(v[0])} />
+                        <Textarea
+                          placeholder="e.g., Should I take the new job offer even though it means moving to a new city?"
+                          className="min-h-[140px] resize-none text-base border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 p-0 font-sans"
+                          style={{ color: "#2b3f32", caretColor: "#3d5a47" }}
+                          {...field}
+                        />
                       </FormControl>
+                      <FormMessage className="text-xs pb-2" />
                     </FormItem>
                   )} />
                 </div>
-              )}
 
-              {/* Bottom action row */}
-              <div className="px-6 py-4 flex items-center justify-between gap-4 border-t border-border/30"
-                style={{ background: "rgba(124,58,237,0.02)" }}>
+                {/* Category */}
+                <div className="px-5 pt-3 pb-4" style={{ borderTop: "1px solid rgba(61,90,71,0.07)" }}>
+                  <p className="text-xs font-medium mb-2.5" style={{ color: "rgba(61,90,71,0.5)" }}>Category</p>
+                  <div className="flex flex-wrap gap-2">
+                    {CATEGORIES.map(({ value, label, icon: Icon }) => (
+                      <button key={value} type="button"
+                        onClick={() => form.setValue("category", selectedCategory === value ? undefined : value as any)}
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all"
+                        style={selectedCategory === value ? {
+                          background: "#3d5a47", color: "#f5f0e8", border: "1px solid #3d5a47"
+                        } : {
+                          background: "transparent", color: "rgba(61,90,71,0.7)", border: "1px solid rgba(61,90,71,0.2)"
+                        }}>
+                        <Icon className="w-3 h-3" />
+                        {label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Add context toggle */}
+              <div>
+                <button type="button" onClick={() => setShowContext(!showContext)}
+                  className="flex items-center gap-1.5 text-sm font-medium transition-colors"
+                  style={{ color: showContext ? "#3d5a47" : "rgba(61,90,71,0.5)" }}>
+                  <ChevronDown className={`w-4 h-4 transition-transform ${showContext ? "rotate-180" : ""}`} />
+                  {showContext ? "Hide context" : "Add context for better results"}
+                </button>
+
+                {showContext && (
+                  <div className="mt-4 rounded-2xl bg-white p-5 grid grid-cols-2 sm:grid-cols-3 gap-3"
+                    style={{ border: "1px solid rgba(61,90,71,0.1)" }}>
+                    {[
+                      { name: "priority" as const, label: "Priority", options: [{ v: "low", l: "Low" }, { v: "medium", l: "Medium" }, { v: "high", l: "High" }] },
+                      { name: "deadline" as const, label: "Deadline", options: [{ v: "none", l: "No deadline" }, { v: "today", l: "Today" }, { v: "this_week", l: "This week" }, { v: "later", l: "Later" }] },
+                      { name: "stressLevel" as const, label: "Stress level", options: [{ v: "low", l: "Calm" }, { v: "medium", l: "A bit tense" }, { v: "high", l: "Overwhelmed" }] },
+                      { name: "energyLevel" as const, label: "Energy", options: [{ v: "low", l: "Tired" }, { v: "medium", l: "Moderate" }, { v: "high", l: "Alert" }] },
+                      { name: "importance" as const, label: "Importance", options: [{ v: "minor", l: "Minor" }, { v: "moderate", l: "Moderate" }, { v: "major", l: "Major" }, { v: "life_changing", l: "Life-changing" }] },
+                      { name: "gutFeeling" as const, label: "Gut feeling", options: [{ v: "go_for_it", l: "Go for it" }, { v: "unsure", l: "Unsure" }, { v: "avoid_it", l: "Avoid it" }] },
+                    ].map(({ name, label, options }) => (
+                      <FormField key={name} control={form.control} name={name} render={({ field }) => (
+                        <FormItem>
+                          <Select onValueChange={field.onChange} value={field.value as string}>
+                            <FormControl>
+                              <SelectTrigger className="text-sm h-9 rounded-xl"
+                                style={{ background: "#f5f0e8", border: "1px solid rgba(61,90,71,0.15)" }}>
+                                <SelectValue placeholder={label} />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              {options.map(({ v, l }) => <SelectItem key={v} value={v}>{l}</SelectItem>)}
+                            </SelectContent>
+                          </Select>
+                        </FormItem>
+                      )} />
+                    ))}
+
+                    <FormField control={form.control} name="sleepHours" render={({ field }) => (
+                      <FormItem className="col-span-full">
+                        <div className="text-xs mb-2" style={{ color: "rgba(61,90,71,0.6)" }}>
+                          Sleep last night: <span className="font-semibold" style={{ color: "#2b3f32" }}>{field.value}h</span>
+                        </div>
+                        <FormControl>
+                          <Slider min={0} max={12} step={0.5} defaultValue={[field.value ?? 7]}
+                            onValueChange={(v) => field.onChange(v[0])} />
+                        </FormControl>
+                      </FormItem>
+                    )} />
+                  </div>
+                )}
+              </div>
+
+              {/* Bottom row */}
+              <div className="flex items-center justify-between">
                 <FormField control={form.control} name="useAi" render={({ field }) => (
                   <FormItem className="flex items-center gap-2 space-y-0">
                     <FormControl>
-                      <Switch checked={field.value} onCheckedChange={field.onChange} />
+                      <Switch checked={field.value} onCheckedChange={field.onChange}
+                        className="data-[state=checked]:bg-[#3d5a47]" />
                     </FormControl>
-                    <span className="text-sm font-medium flex items-center gap-1.5">
-                      <Sparkles className="w-3.5 h-3.5" style={{ color: "hsl(300 60% 58%)" }} />
+                    <span className="text-sm font-medium flex items-center gap-1.5" style={{ color: "#3d5a47" }}>
+                      <Sparkles className="w-3.5 h-3.5" style={{ color: "#b05a3a" }} />
                       AI Enhanced
                     </span>
                   </FormItem>
@@ -236,24 +252,18 @@ export default function Home() {
 
                 <Button
                   type="submit"
-                  size="lg"
-                  className="rounded-2xl border-0 text-white font-semibold px-8 py-3 text-base transition-all hover:scale-[1.03] hover:shadow-xl disabled:opacity-60 disabled:scale-100"
-                  style={{ background: "linear-gradient(135deg, hsl(263 72% 52%) 0%, hsl(300 60% 58%) 100%)" }}
+                  className="rounded-full text-sm font-semibold px-7 py-2.5 border-0 transition-all hover:opacity-90 hover:-translate-y-0.5 hover:shadow-md disabled:opacity-60"
+                  style={{ background: "#3d5a47", color: "#f5f0e8" }}
                   disabled={createDecision.isPending}
                 >
                   {createDecision.isPending
-                    ? <><Loader2 className="mr-2 h-5 w-5 animate-spin" /> Thinking…</>
-                    : <>Decide <ArrowRight className="ml-2 h-5 w-5" /></>}
+                    ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Thinking…</>
+                    : <>Think it through <ArrowRight className="ml-2 h-4 w-4" /></>}
                 </Button>
               </div>
-            </div>
-
-            {/* Trust line */}
-            <p className="text-center text-xs text-muted-foreground">
-              Powered by rule-based reasoning + Gemini AI · Your data is private
-            </p>
-          </form>
-        </Form>
+            </form>
+          </Form>
+        </div>
       </div>
     </div>
   );
